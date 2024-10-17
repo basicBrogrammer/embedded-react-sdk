@@ -1,0 +1,9 @@
+{
+  "version": "36d35e28689e641e9e153f0324c2625a",
+  "tax_payer_type": "Sole proprietor",
+  "taxable_as_scorp": false,
+  "filing_form": "944",
+  "has_ein": true,
+  "ein_verified": false,
+  "legal_name": "foobarbaz"
+}

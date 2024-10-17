@@ -1,0 +1,14 @@
+{
+  "version": "ad88c4e3c40f122582e425030d5c2771",
+  "type": "Direct Deposit",
+  "split_by": "Percentage",
+  "splits": [
+    {
+      "uuid": "d68e89b4-5a0a-4547-8f98-84e7ffc7e6ca",
+      "name": "Checking Account",
+      "hidden_account_number": "XXXX4873",
+      "priority": 1,
+      "split_amount": 100
+    }
+  ]
+}

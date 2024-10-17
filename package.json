@@ -1,0 +1,47 @@
+{
+  "name": "@gusto/embedded-react-sdk",
+  "version": "0.0.1",
+  "packageManager": "bun@1.1.30",
+  "module": "./dist/index.js",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "files": [
+    "dist",
+    "./README.md",
+    "./CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "bun build:clean && bun openapi:generate && tsc -b --pretty",
+    "build:clean": "rm -rf ./dist && mkdir ./dist",
+    "dev": "tsc -b --watch",
+    "doc": "typedoc",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "openapi": "bun openapi:download && bun openapi:generate",
+    "openapi:download": "bun build/getTargetSpecFromReadme.js",
+    "openapi:generate": "bun build/generateOpenApiFiles.js",
+    "prepublishOnly": "bun run build",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.59.15",
+    "@types/bun": "latest",
+    "@types/jest": "^29.5.13",
+    "@types/react": "^18.3.11",
+    "jest": "^29.7.0",
+    "msw": "2.4.3",
+    "openapi-typescript": "^7.4.1",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.26.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.59.15",
+    "openapi-fetch": "^0.12.2",
+    "react": "^18.3.1"
+  }
+}

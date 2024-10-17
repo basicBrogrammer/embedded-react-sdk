@@ -1,0 +1,10 @@
+[
+  {
+    "uuid": "7d311fb3-8630-45dc-ad7e-8fea0e8e55f0",
+    "employee_uuid": "f621c2cc-c89e-414a-b401-3f5d787f1c17",
+    "account_type": "Checking",
+    "name": "Chase",
+    "routing_number": "011401533",
+    "hidden_account_number": "XXXX0000"
+  }
+]

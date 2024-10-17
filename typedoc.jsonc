@@ -1,0 +1,10 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Gusto Embedded React SDK",
+  "entryPoints": ["./src/"],
+  "disableSources": true,
+  "excludeNotDocumented": false,
+  "hideGenerator": true,
+  "cacheBust": true,
+  "cleanOutputDir": true,
+}
