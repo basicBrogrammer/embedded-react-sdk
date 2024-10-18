@@ -24,6 +24,7 @@
     "allowJs": true,
     "moduleResolution": "bundler",
     "esModuleInterop": true,
+    "declaration": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": false,
