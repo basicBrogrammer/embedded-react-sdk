@@ -1,0 +1,102 @@
+.GSDK {
+  .react-aria-Checkbox {
+    --selected-color: var(--g-colors-primary-1000);
+    --selected-color-pressed: var(--g-colors-primary-900);
+    --checkmark-color: var(--g-colors-primary-100);
+
+    display: flex;
+    align-items: center;
+    gap: 0.571rem;
+    font-size: 1.143rem;
+    color: var(--g-typography-textColor);
+    forced-color-adjust: none;
+
+    .checkbox {
+      width: 1.143rem;
+      height: 1.143rem;
+      border: var(--g-checkbox-borderWidth) solid var(--g-checkbox-borderColor);
+      border-radius: var(--g-spacing-radius);
+      transition: all 200ms;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    svg {
+      color: var(--checkmark-color);
+      fill: currentColor;
+      transition: all 200ms;
+    }
+
+    &[data-pressed] .checkbox {
+      border-color: var(--border-color-pressed);
+    }
+
+    &[data-focus-visible] .checkbox {
+      outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+      outline-offset: 2px;
+    }
+
+    &[data-selected],
+    &[data-indeterminate] {
+      .checkbox {
+        border-color: var(--selected-color);
+        background: var(--selected-color);
+      }
+
+      &[data-pressed] .checkbox {
+        border-color: var(--selected-color-pressed);
+        background: var(--selected-color-pressed);
+      }
+
+      svg {
+        stroke-dashoffset: 44;
+      }
+    }
+
+    &[data-indeterminate] {
+      & svg {
+        stroke: none;
+        fill: var(--checkmark-color);
+      }
+    }
+
+    &[data-invalid] {
+      .checkbox {
+        --checkmark-color: var(--g-colors-error-500);
+        border-color: var(--g-colors-error-500);
+        background-color: var(--g-colors-error-100);
+      }
+
+      &[data-pressed] .checkbox {
+        border-color: var(--g-colors-error-800);
+      }
+
+      &[data-selected],
+      &[data-indeterminate] {
+        .checkbox {
+          background: var(--g-colors-primary-100);
+        }
+
+        &[data-pressed] .checkbox {
+          background: var(--g-colors-error-800);
+        }
+      }
+    }
+
+    &[data-disabled] {
+      color: var(--g-typography-disabledTextColor);
+
+      .checkbox {
+        border-color: var(--g-typography-disabledTextColor);
+        background-color: var(--g-colors-primary-100);
+        svg {
+          color: var(--g-typography-disabledTextColor);
+        }
+      }
+      & + .react-aria-Checkbox-description {
+        color: var(--g-typography-disabledTextColor);
+      }
+    }
+  }
+}

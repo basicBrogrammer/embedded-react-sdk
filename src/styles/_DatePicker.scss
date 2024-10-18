@@ -1,0 +1,33 @@
+.GSDK {
+  .react-aria-DatePicker {
+    color: var(--g-typography-textColor);
+    width: 100%;
+
+    .react-aria-Group {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+      border-radius: var(--g-spacing-radius);
+    }
+
+    .react-aria-Button {
+      margin-left: var(--g-spacing-spacer);
+      margin-right: var(--g-input-padding);
+      background: transparent;
+      padding: 0;
+      color: var(--g--colors-primary-700);
+      forced-color-adjust: none;
+      line-height: 0;
+    }
+    .react-aria-FieldError {
+      @include fieldError;
+    }
+  }
+  [slot='description'] {
+    @include description;
+  }
+  .react-aria-Popover[data-trigger='DatePicker'] {
+    max-width: unset;
+  }
+}

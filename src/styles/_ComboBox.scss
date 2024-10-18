@@ -1,0 +1,72 @@
+.GSDK {
+  //TODO: style this component
+  .react-aria-ComboBox {
+    color: var(--g-typography-text-color);
+    width: 100%;
+
+    .react-aria-Input {
+      @include formInput;
+      width: 100%;
+    }
+
+    .react-aria-Button {
+      margin-left: var(--g-spacing-spacer);
+      margin-right: var(--g-input-padding);
+      background: transparent;
+      padding: 0;
+      color: var(--g--colors-primary-700);
+      forced-color-adjust: none;
+      line-height: 0;
+
+      // &[data-pressed] {
+      //   box-shadow: none;
+      //   background: var(--highlight-background);
+      // }
+    }
+  }
+
+  .react-aria-Popover[data-trigger='ComboBox'] {
+    width: var(--trigger-width);
+
+    .react-aria-ListBox {
+      display: block;
+      width: unset;
+      max-height: inherit;
+      min-height: unset;
+      border: none;
+
+      .react-aria-Header {
+        padding-left: 1.571rem;
+      }
+    }
+
+    .react-aria-ListBoxItem {
+      padding: 0.286rem 0.571rem 0.286rem 1.571rem;
+
+      &[data-focus-visible] {
+        outline: none;
+      }
+
+      &[data-selected] {
+        font-weight: 600;
+        background: unset;
+        color: var(--text-color);
+
+        &::before {
+          content: '✓';
+          content: '✓' / '';
+          alt: ' ';
+          position: absolute;
+          top: 4px;
+          left: 4px;
+        }
+      }
+
+      &[data-focused],
+      &[data-pressed] {
+        background: var(--highlight-background);
+        color: var(--highlight-foreground);
+      }
+    }
+  }
+}

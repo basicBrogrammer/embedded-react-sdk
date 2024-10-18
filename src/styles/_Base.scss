@@ -1,0 +1,41 @@
+.GSDK {
+  font-family: var(--g-typography-font);
+  // All global styles go here
+  // More accessible line-height
+  line-height: var(--g-typography-defaultLineHeight);
+
+  // More intuitive box-sizing
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  // Balance text wrapping on headings
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+    // margin-bottom: var(--g-spacing-spacer);
+    margin-bottom: 0;
+  }
+  small {
+    font-size: var(--g-typography-fontSize-small);
+  }
+
+  @for $i from 1 through 6 {
+    h#{$i} {
+      font-size: var(--g-typography-headings-#{$i});
+    }
+  }
+
+  /* Make images easier to work with */
+  img,
+  picture {
+    max-width: 100%;
+    display: block;
+  }
+}
