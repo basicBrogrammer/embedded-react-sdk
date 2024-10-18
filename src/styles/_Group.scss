@@ -1,0 +1,48 @@
+.GSDK {
+  .react-aria-Group {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    border-radius: var(--g-spacing-radius);
+    // border: 1px solid var(--border-color);
+    // background: var(--field-background);
+    overflow: hidden;
+    transition: all 200ms;
+
+    &[data-hovered] {
+      border-color: var(--border-color-hover);
+    }
+
+    &[data-focus-within] {
+      outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+    }
+
+    // .react-aria-Input {
+    //   padding: 0.286rem;
+    //   margin: 0;
+    //   font-size: 1rem;
+    //   color: var(--text-color);
+    //   outline: none;
+    //   border: none;
+    //   background: transparent;
+
+    //   &::placeholder {
+    //     color: var(--text-color-placeholder);
+    //     opacity: 1;
+    //   }
+    // }
+
+    // .react-aria-Button {
+    //   padding: 0 6px;
+    //   border-width: 0 0 0 1px;
+    //   border-radius: 0 6px 6px 0;
+    //   align-self: stretch;
+    //   font-size: 1.5rem;
+    //   &[data-focus-visible] {
+    //     border-color: var(--g-focus-color);
+    //     outline-width: 1px;
+    //     outline-offset: 0;
+    //   }
+    // }
+  }
+}

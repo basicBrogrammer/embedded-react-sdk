@@ -1,0 +1,19 @@
+@font-face {
+  font-display: swap;
+  font-family: 'GCentra';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    url('@/assets/fonts/gcentra-book.woff2') format('woff2'),
+    url('@/assets/fonts/gcentra-book.woff') format('woff');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'GCentra';
+  font-style: normal;
+  font-weight: 500;
+  src:
+    url('@/assets/fonts/gcentra-medium.woff2') format('woff2'),
+    url('@/assets/fonts/gcentra-medium.woff') format('woff');
+}

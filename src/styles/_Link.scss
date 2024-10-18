@@ -1,0 +1,30 @@
+.GSDK {
+  .react-aria-Link,
+  a {
+    color: var(--g-link-color);
+    transition: all 200ms;
+    text-decoration: var(--g-link-decoration);
+    cursor: pointer;
+    outline: none;
+    position: relative;
+
+    &[data-hovered],
+    &:hover {
+      color: var(--g-link-hoverColor);
+      text-decoration: var(--g-link-hoverDecoration);
+    }
+
+    &[data-pressed],
+    &:visited {
+      color: var(--g-link-pressedColor);
+    }
+
+    &[data-focus-visible]:after {
+      content: '';
+      position: absolute;
+      inset: -3px -6px;
+      border-radius: 6px;
+      // border: 2px solid var(--g-focus-color);
+    }
+  }
+}

@@ -1,0 +1,25 @@
+@mixin justifyContent($vals) {
+  @each $val in $vals {
+    justify-content: $val;
+  }
+}
+.flex {
+  width: 100%;
+  display: flex;
+  gap: var(--g-spacing-spacer);
+  @each $val in normal center flex-start flex-end space-between space-around space-evenly {
+    &-jc-#{$val} {
+      justify-content: $val;
+    }
+  }
+  @each $val in column row {
+    &-fd-#{$val} {
+      flex-direction: $val;
+    }
+  }
+  @each $val in center flex-start flex-end stretch {
+    &-ai-#{$val} {
+      align-items: $val;
+    }
+  }
+}

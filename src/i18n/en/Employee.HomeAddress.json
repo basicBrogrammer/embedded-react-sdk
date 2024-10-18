@@ -1,0 +1,24 @@
+{
+  "formTitle": "Home address",
+  "desc": "Employee’s home mailing address, within the United States.",
+  "street1": "Street 1",
+  "street2": "Street 2",
+  "city": "City",
+  "state": "State",
+  "statePlaceholder": "Select state...",
+  "zip": "Zip",
+  "courtesyWithholdingLabel": "Include courtesy withholding",
+  "courtesyWhithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states. ",
+  "learnMoreCta": "<learnMore href=\"https://support.gusto.com/article/101365481100000/Reciprocal-agreements-and-courtesy-withholding\" target=\"_blank\">Learn more about courtesy withholdings.</learnMore>",
+  "withholdingTitle": "Curtesy withholding",
+  "withholdingNote": "<p>Withholding on an employee's behalf will require your company to register with any corresponding agencies.</p><p>Also, if this employee's home address will change your company's state tax requirements, you may need to complete your company's state tax setup again.</p>",
+  "editAddress": "Edit Address",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "validations": {
+    "street1": "Street address is required",
+    "city": "Please provide valid city name",
+    "state": "Please select a state",
+    "zip": "Please provide valid zip code"
+  }
+}

@@ -1,0 +1,17 @@
+.GSDK {
+  .react-aria-CheckboxGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--g-spacing-spacer);
+    color: var(--g-typography-textColor);
+
+    .react-aria-FieldError {
+      font-size: var(--g-typography-fontSize-small);
+      color: var(--g-typography-errorTextColor);
+    }
+
+    [slot='description'] {
+      font-size: var(--g-typography-fontSize-small);
+    }
+  }
+}

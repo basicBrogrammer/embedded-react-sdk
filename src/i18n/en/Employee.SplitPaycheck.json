@@ -1,0 +1,22 @@
+{
+  "amountLabel": "Amount",
+  "bankDescription": "Select the amount to split to this account.",
+  "description": "Here you can split the employee’s paycheck. Select between a whole value or percentage split. Then set the priority and amount to complete the setup.",
+  "percentageLabel": "Percentage",
+  "splitAmountLabel": "Split amount",
+  "splitByLabel": "Split by",
+  "priorityLabel": "Priority",
+  "title": "Split employee paycheck",
+  "remainderLabel": "Select if this account will recieve any remaining payments",
+  "priority_one": "{{count}}st",
+  "priority_two": "{{count}}nd",
+  "priority_few": "{{count}}rd",
+  "priority_other": "{{count}}th",
+  "validations": {
+    "percentageError": "If payment method amount is split by Percentage, all split amounts must add up to exactly 100.",
+    "priorityError": "Priorities must be sequential",
+    "amountError": "Please enter valid amount"
+  },
+  "cancelCta": "Cancel",
+  "submitCta": "Submit"
+}

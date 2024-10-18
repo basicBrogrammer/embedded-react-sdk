@@ -1,0 +1,28 @@
+{
+  "title": "Basics",
+  "description": "This information will be used for payroll and taxes, so double-check that it's accurate.",
+  "firstName": "Legal first name",
+  "lastName": "Legal last name",
+  "middleInitial": "Middle initial",
+  "preferredFirstName": "Preferred first name",
+  "ssnLabel": "Social Security Number (9 digit)",
+  "email": "Personal email",
+  "emailDescription": "Use an email that's not associated with your company.",
+  "workAddress": "Work address",
+  "workAddressDescription": "The primary location where the employee will be working.",
+  "workAddressPlaceholder": "Select work address...",
+  "submitCta": "Submit",
+  "cancelCta": "Cancel",
+  "formTitle": "Employee Form",
+  "selfOnboardingLabel": "Invite this employee to enter their own details online.",
+  "dobLabel": "Date of birth",
+  "startDateLabel": "Start date",
+  "startDateDescription": "Your employee’s first day of work at your company.",
+  "ssnMask": "***-**-****",
+  "validations": {
+    "firstName": "First name is required",
+    "lastName": "First name is required",
+    "startDate": "Please select valid start date",
+    "email": "Valid email is required"
+  }
+}

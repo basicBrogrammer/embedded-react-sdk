@@ -1,0 +1,16 @@
+{
+  "actionLabel": "Actions",
+  "addEmployeeCTA": "Add Employee",
+  "addressesCta": "Addresses",
+  "deductionsCta": "Deductions",
+  "deleteCta": "Delete employee",
+  "editCta": "Edit employee",
+  "employeeListLabel": "List of current employees",
+  "emptyTableDescription": "Once you’ve added employees they will appear here",
+  "emptyTableTitle": "No employees",
+  "federalTaxesCta": "Federal Taxes",
+  "hamburgerTitle": "Employee actions menu",
+  "nameLabel": "Employee name",
+  "statusLabel": "Status",
+  "title": "Your employees"
+}

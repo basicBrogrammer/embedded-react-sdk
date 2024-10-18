@@ -1,0 +1,12 @@
+@import '@/styles/Helpers';
+.emptyData {
+  margin: toRem(40);
+  p {
+    color: var(--g-colors-primary-900);
+  }
+}
+.title {
+  font-size: var(--g-typography-headings-3);
+  font-weight: 500;
+  color: var(--g-colors-primary-1000);
+}

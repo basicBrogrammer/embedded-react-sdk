@@ -1,0 +1,21 @@
+{
+  "title": "Summary",
+  "subTitle": "Missing Requirements",
+  "description": "Please complete the following steps in order to continue.",
+  "onboardedSubtitle": "Employee onboarded",
+  "onboardedDescription": "This employee has been successfully onboarded.",
+  "returnToEmployeeListCta": "Return to employees list",
+  "addAnotherCta": "Add another employee",
+  "newHireReportCta": "New Hire report",
+  "steps": {
+    "personal_details": "Personal Details",
+    "compensation_details": "Enter compensation details",
+    "add_work_address": "Add work address",
+    "add_home_address": "Add home address",
+    "federal_tax_setup": "Enter federal tax withholdings",
+    "state_tax_setup": "Enter state tax information",
+    "direct_deposit_setup": "Direct deposit setup",
+    "employee_form_signing": "Employee form signing",
+    "file_new_hire_report": "File new hire report"
+  }
+}

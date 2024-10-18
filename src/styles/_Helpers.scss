@@ -1,0 +1,57 @@
+@function toRem($value) {
+  $remValue: calc(($value * 1rem) / var(--g-rootFS));
+  @return $remValue;
+}
+
+@mixin fieldError {
+  display: flex;
+  align-items: center;
+  margin-top: toRem(4);
+  font-size: toRem(14);
+  line-height: toRem(18);
+  color: var(--g-colors-error-500);
+  // Error icon
+  &::before {
+    content: '';
+    display: block;
+    padding: 2px;
+    margin-right: 4px;
+    width: toRem(20);
+    height: toRem(20);
+    background: url('@/assets/icons/error.svg') no-repeat 50% 50% transparent;
+  }
+}
+
+@mixin description {
+  display: block;
+  font-size: var(--g-typography-fontSize-small);
+  font-weight: 400;
+  line-height: toRem(18);
+  color: var(--g-input-descriptionColor);
+  margin-bottom: toRem(4);
+}
+
+@mixin formInput {
+  padding: var(--g-input-padding);
+  margin: 0;
+  border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+  border-radius: 6px;
+  background: var(--g-input-background);
+  font-size: var(--g-input-fontSize);
+  color: var(--g-input-textColor);
+  line-height: toRem(24);
+
+  &[data-focused] {
+    outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+  }
+
+  &[data-invalid] {
+    border-color: var(--g-colors-error-500);
+  }
+
+  &[data-disabled] {
+    border-color: var(--g-input-disabled-border);
+    color: var(--g-input-disabled-color);
+    background-color: var(--g-input-disabled-bg);
+  }
+}

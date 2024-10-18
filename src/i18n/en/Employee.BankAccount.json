@@ -1,0 +1,18 @@
+{
+  "accountNumberLabel": "Account number",
+  "accountTypeChecking": "Checking",
+  "accountTypeLabel": "Account type",
+  "accountTypeSavings": "Savings",
+  "accountTypeSelect": "Select...",
+  "cancelCta": "Back",
+  "checkImageAlt": "Image of the sample bank check showing location of routing and account numbers",
+  "description": "Enter the details of the bank account the employee wishes to be paid with. We’ll send a small test deposit to confirm the account.",
+  "nameLabel": "Account Nickname",
+  "routingNumberLabel": "Routing number",
+  "routingNumberDescription": "(9 digits)",
+  "submitCta": "Save & continue",
+  "title": "Employee bank account",
+  "validations": {
+    "accountType": "Please select account type"
+  }
+}

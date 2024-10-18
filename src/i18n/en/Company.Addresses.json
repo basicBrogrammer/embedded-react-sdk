@@ -1,0 +1,9 @@
+{
+  "title": "Company addresses",
+  "description": "To automate your payroll filings, we need to have your company's accurate addresses. Please enter your mailing and filing addresses and all addresses where you have employees physically working in the United States.",
+  "mailingLabel": "Mailing Address",
+  "filingLabel": "Filing Address",
+  "editCta": "Edit",
+  "addCta": "Add address",
+  "continueCta": "I've added all addresses"
+}
