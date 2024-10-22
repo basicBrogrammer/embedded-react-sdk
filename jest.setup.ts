@@ -1,4 +1,3 @@
-// jest.setup.js
 import { server } from './test/mocks/server'
 
 beforeAll(() => {

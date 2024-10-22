@@ -1,5 +1,5 @@
-import type { JestConfigWithTsJest } from 'ts-jest'
-
+import { type JestConfigWithTsJest, pathsToModuleNameMapper } from 'ts-jest'
+import { compilerOptions } from './tsconfig.json'
 /**
  * Jest Configuration.
  *
@@ -7,10 +7,14 @@ import type { JestConfigWithTsJest } from 'ts-jest'
  */
 export default <JestConfigWithTsJest>{
   roots: ['./src', './test'],
-  preset: 'ts-jest',
-  testEnvironment: 'node',
+  preset: 'ts-jest/presets/default-esm',
+  testEnvironment: 'jest-fixed-jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: [''],
+  },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    ...pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
   },
   transform: {
     '^.+\\.[tj]sx?$': [
@@ -19,6 +23,10 @@ export default <JestConfigWithTsJest>{
         useESM: true,
       },
     ],
+    '.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+      '<rootDir>/test/mocks/fileMock.js',
+    '.(css|scss|sass)$': '<rootDir>/test/mocks/styleMock.js',
+    '^.+\\.svg$': 'jest-transformer-svg',
   },
   coverageProvider: 'v8',
   collectCoverage: false,
