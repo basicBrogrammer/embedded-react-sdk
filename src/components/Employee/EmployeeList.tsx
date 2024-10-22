@@ -1,7 +1,7 @@
 import { Cell, Column, Row, Table, TableBody, TableHeader } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import PencilSvg from '@/assets/icons/pencil.svg'
-import TrashCanSvg from '@/assets/icons/trashcan.svg'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import {
   useBase,
   BaseComponent,
@@ -114,7 +114,7 @@ function List() {
             <Cell>
               <Hamburger title={t('hamburgerTitle')}>
                 <HamburgerItem
-                  icon={<img src={PencilSvg} aria-hidden />}
+                  icon={<PencilSvg aria-hidden />}
                   onAction={() => {
                     handleEdit(employee.uuid)
                   }}
@@ -123,7 +123,7 @@ function List() {
                 </HamburgerItem>
                 {!employee.onboarded && (
                   <HamburgerItem
-                    icon={<img src={TrashCanSvg} aria-hidden />}
+                    icon={<TrashCanSvg aria-hidden />}
                     onAction={() => {
                       confirm('Are you sure?') && deleteEmployee(employee.uuid)
                     }}

@@ -21,7 +21,7 @@ import {
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import CaretDown from '@/assets/caret-down.svg'
+import CaretDown from '@/assets/caret-down.svg?react'
 import { Button, Checkbox, Flex, FlexItem, Select } from '@/components/Common'
 import { useProfile } from '@/components/Employee/Profile/Profile'
 import { useTheme } from '@/contexts'
@@ -168,7 +168,7 @@ export function PersonalDetails() {
               <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
               <Button>
                 <div aria-hidden="true">
-                  <img src={CaretDown} />
+                  <CaretDown />
                 </div>
               </Button>
             </Group>
@@ -255,7 +255,7 @@ export function PersonalDetails() {
                   <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
                   <Button>
                     <div aria-hidden="true">
-                      <img src={CaretDown} />
+                      <CaretDown />
                     </div>
                   </Button>
                 </Group>

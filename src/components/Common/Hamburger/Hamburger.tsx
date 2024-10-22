@@ -7,7 +7,7 @@ import {
   type MenuProps,
   type MenuTriggerProps,
 } from 'react-aria-components'
-import HamburgerIcon from '@/assets/icons/hamburger.svg'
+import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { Button } from '@/components/Common'
 import { useTheme } from '@/contexts'
 

@@ -1,8 +1,8 @@
 import { VisuallyHidden } from 'react-aria'
 import { Cell, Column, Row, Table, TableBody, TableHeader } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import PencilSvg from '@/assets/icons/pencil.svg'
-import TrashCanSvg from '@/assets/icons/trashcan.svg'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Hamburger, HamburgerItem } from '@/components/Common'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
 
@@ -32,7 +32,7 @@ export function BankAccountsList() {
               <Cell>
                 <Hamburger title={t('hamburgerTitle')}>
                   <HamburgerItem
-                    icon={<img src={PencilSvg} aria-hidden />}
+                    icon={<PencilSvg aria-hidden />}
                     onAction={() => {
                       handleEdit(ba.uuid)
                     }}
@@ -40,7 +40,7 @@ export function BankAccountsList() {
                     {t('editBankAccountCTA')}
                   </HamburgerItem>
                   <HamburgerItem
-                    icon={<img src={TrashCanSvg} aria-hidden />}
+                    icon={<TrashCanSvg aria-hidden />}
                     onAction={() => {
                       handleDelete(ba.uuid)
                     }}

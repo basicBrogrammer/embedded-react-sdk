@@ -1,7 +1,7 @@
 import { forwardRef, useId, type ReactNode } from 'react'
 import { type CheckboxProps, Checkbox as _Checkbox } from 'react-aria-components'
-import IconChecked from '@/assets/icons/checkbox.svg'
-import IconCheckedIndeterminete from '@/assets/icons/checkbox_indeterminate.svg'
+import IconChecked from '@/assets/icons/checkbox.svg?react'
+import IconCheckedIndeterminate from '@/assets/icons/checkbox_indeterminate.svg?react'
 
 interface CheckboxDescriptionProps extends CheckboxProps {
   description?: string | ReactNode
@@ -17,7 +17,7 @@ export const Checkbox = forwardRef(function (
         {({ isIndeterminate }) => (
           <>
             <div className="checkbox">
-              {isIndeterminate ? <IconCheckedIndeterminete /> : <IconChecked />}
+              {isIndeterminate ? <IconCheckedIndeterminate /> : <IconChecked />}
             </div>
             {children}
           </>

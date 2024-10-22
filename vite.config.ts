@@ -1,9 +1,11 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import dts from 'vite-plugin-dts'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), dts(), svgr()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -11,7 +13,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      name: 'embedded-react-sdk',
+      fileName: 'index',
       entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es'],
     },

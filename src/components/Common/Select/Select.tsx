@@ -11,7 +11,7 @@ import {
   Text,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import CaretDown from '@/assets/caret-down.svg'
+import CaretDown from '@/assets/caret-down.svg?react'
 import { useTheme } from '@/contexts'
 import type {
   ListBoxItemProps,
@@ -51,7 +51,7 @@ export const Select = forwardRef(function <T extends object>(
           }}
         </SelectValue>
         <div aria-hidden="true">
-          <img src={CaretDown} title={t('icons.selectArrow')} />
+          <CaretDown title={t('icons.selectArrow')} />
         </div>
       </Button>
 
