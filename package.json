@@ -19,19 +19,23 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
-    "build": "npm run build:clean && npm run openapi:generate && vite build",
+    "build": "npm run build:clean && npm run openapi:generate ** npm run i18n:generate && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "dev": "vite build --watch",
     "doc": "typedoc",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "i18n:generate": "i18next-resources-for-ts interface -i ./src/i18n/en -o ./src/types/i18nresources.d.ts",
+    "lint": "echo TBD",
     "openapi": "npm run openapi:download && npm run openapi:generate",
     "openapi:download": "node build/getTargetSpecFromReadme.js",
     "openapi:generate": "node build/generateOpenApiFiles.js",
     "pack": "npm run build && npm pack",
     "prepublishOnly": "npm run build",
+    "stylelint": "echo TBD",
     "test": "jest",
+    "test:ci": "jest --coverage",
+    "test:watch": "npm run test -- --watchAll",
     "tsc": "tsc"
   },
   "devDependencies": {
