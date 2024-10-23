@@ -21,6 +21,7 @@
   "scripts": {
     "build": "npm run build:clean && npm run openapi:generate ** npm run i18n:generate && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
+    "commitlint": "commitlint --edit",
     "dev": "vite build --watch",
     "doc": "typedoc",
     "format": "prettier . --write",
@@ -31,6 +32,7 @@
     "openapi:download": "node build/getTargetSpecFromReadme.js",
     "openapi:generate": "node build/generateOpenApiFiles.js",
     "pack": "npm run build && npm pack",
+    "prepare": "husky",
     "prepublishOnly": "npm run build",
     "stylelint": "echo TBD",
     "test": "jest",
@@ -39,6 +41,8 @@
     "tsc": "tsc"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@tanstack/react-query-devtools": "^5.59.15",
     "@testing-library/jest-dom": "^6.6.2",
     "@testing-library/react": "^16.0.1",
