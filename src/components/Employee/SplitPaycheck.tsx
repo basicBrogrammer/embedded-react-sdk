@@ -1,27 +1,18 @@
-import { ErrorMessage } from '@hookform/error-message'
-import { valibotResolver } from '@hookform/resolvers/valibot'
-import { Fragment } from 'react'
-import {
-  FieldError,
-  Form,
-  Input,
-  Label,
-  ListBoxItem,
-  NumberField,
-  Radio,
-  RadioGroup,
-} from 'react-aria-components'
-import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
-import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Flex, Select, useAsyncError } from '@/components/Common'
+import { useUpdateEmployeePaymentMethod } from '@/api/queries/employee'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
+import { Button, Flex, NumberField, RadioGroup, Select, useAsyncError } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { PaymentMethodType } from '@/types'
-import { useUpdateEmployeePaymentMethod } from '@/api/queries/employee'
+import { ErrorMessage } from '@hookform/error-message'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { Fragment } from 'react'
+import { Form, Label, ListBoxItem, Radio } from 'react-aria-components'
+import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import * as v from 'valibot'
 
 interface SplitPaycheckProps {
   paymentMethod: PaymentMethodType
@@ -140,24 +131,17 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
         />
         <h2>{t('title')}</h2>
         <p>{t('description')}</p>
-        <Controller
+        <Select
           control={control}
           name="split_by"
-          render={({ field, fieldState: { invalid }, formState: { defaultValues } }) => (
-            <Select
-              {...field}
-              isInvalid={invalid}
-              label={t('splitByLabel')}
-              items={[
-                { id: 'Percentage', name: t('percentageLabel') },
-                { id: 'Amount', name: t('amountLabel') },
-              ]}
-              defaultSelectedKey={defaultValues?.split_by}
-            >
-              {(option: { name: string; id: string }) => <ListBoxItem>{option.name}</ListBoxItem>}
-            </Select>
-          )}
-        />
+          label={t('splitByLabel')}
+          items={[
+            { id: 'Percentage', name: t('percentageLabel') },
+            { id: 'Amount', name: t('amountLabel') },
+          ]}
+        >
+          {(option: { name: string; id: string }) => <ListBoxItem>{option.name}</ListBoxItem>}
+        </Select>
         {paymentMethod.splits &&
           paymentMethod.splits.sort(splitByPrioritySort).map(split => (
             <Fragment key={split.uuid}>
@@ -166,61 +150,39 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
               </h2>
               <p>{t('bankDescription')}</p>
               {watchSplitBy === 'Amount' && (
-                <Controller
+                <Select
                   control={control}
                   name={`priority.${split.uuid}`}
-                  render={({ field, fieldState: { invalid } }) => (
-                    <Select
-                      {...field}
-                      isInvalid={invalid}
-                      label={t('priorityLabel')}
-                      items={
-                        paymentMethod.splits?.map((_, i) => ({
-                          id: i + 1,
-                          name: t('priority', { count: i + 1, ordinal: true }),
-                        })) ?? []
-                      }
-                      defaultSelectedKey={field.value}
-                    >
-                      {(option: { name: string; id: number }) => (
-                        <ListBoxItem>{option.name}</ListBoxItem>
-                      )}
-                    </Select>
+                  label={t('priorityLabel')}
+                  items={
+                    paymentMethod.splits?.map((_, i) => ({
+                      id: i + 1,
+                      name: t('priority', { count: i + 1, ordinal: true }),
+                    })) ?? []
+                  }
+                >
+                  {(option: { name: string; id: number }) => (
+                    <ListBoxItem>{option.name}</ListBoxItem>
                   )}
-                />
+                </Select>
               )}
-              <Controller
+              <NumberField
                 control={control}
                 name={`split_amount.${split.uuid}`}
-                render={({ field, fieldState: { invalid } }) => (
-                  <NumberField
-                    {...field}
-                    validationBehavior="aria"
-                    isInvalid={invalid}
-                    formatOptions={{
-                      style: watchSplitBy === 'Percentage' ? 'percent' : 'currency',
-                      currency: currency,
-                    }}
-                    isDisabled={watchSplitBy === 'Amount' && watchRemainder === split.uuid}
-                  >
-                    <Label>{t('splitAmountLabel')}</Label>
-                    <Input />
-                    <FieldError>{t('validations.amountError')}</FieldError>
-                  </NumberField>
-                )}
+                label={t('splitAmountLabel')}
+                errorMessage={t('validations.amountError')}
+                formatOptions={{
+                  style: watchSplitBy === 'Percentage' ? 'percent' : 'currency',
+                  currency: currency,
+                }}
+                isDisabled={watchSplitBy === 'Amount' && watchRemainder === split.uuid}
               />
               {watchSplitBy === 'Amount' && (
-                <Controller
-                  control={control}
-                  name="remainder"
-                  render={({ field }) => (
-                    <RadioGroup {...field}>
-                      <Radio value={split.uuid}>
-                        <Label>{t('remainderLabel')}</Label>
-                      </Radio>
-                    </RadioGroup>
-                  )}
-                />
+                <RadioGroup control={control} name="remainder">
+                  <Radio value={split.uuid}>
+                    <Label>{t('remainderLabel')}</Label>
+                  </Radio>
+                </RadioGroup>
               )}
             </Fragment>
           ))}

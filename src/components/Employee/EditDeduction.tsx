@@ -1,25 +1,24 @@
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useAddEmployeeDeduction, useUpdateDeduction } from '@/api/queries/employee'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import {
-  FieldError,
-  Form,
-  Input,
-  Label,
+  Button,
+  Checkbox,
+  Flex,
   NumberField,
-  Radio,
   RadioGroup,
   TextField,
-} from 'react-aria-components'
-import { Controller, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
-import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Checkbox, Flex, useAsyncError } from '@/components/Common'
+  useAsyncError,
+} from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { Schemas } from '@/types'
-import { useAddEmployeeDeduction, useUpdateDeduction } from '@/api/queries/employee'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { Form, Radio } from 'react-aria-components'
+import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import * as v from 'valibot'
 
 interface DeductionFormProps {
   employeeId: string
@@ -116,86 +115,50 @@ export const EditDeduction = (props: DeductionFormProps & BaseComponentInterface
       <p>{t('desc')}</p>
       <h2>{t('externalPostTax')}</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
+        <TextField
           control={control}
           name="description"
-          render={({ field, fieldState: { invalid } }) => (
-            <TextField {...field} validationBehavior="aria" isInvalid={invalid} isRequired>
-              <Label>{t('description')}</Label>
-              <Input />
-              <FieldError>{t('validations.description')}</FieldError>
-            </TextField>
-          )}
+          label={t('description')}
+          isRequired
+          errorMessage={t('validations.description')}
         />
-        <Controller
+        <RadioGroup
           control={control}
           name="recurring"
-          render={({ field }) => (
-            <RadioGroup {...field} validationBehavior="aria">
-              <Label>{t('frequency')}</Label>
-              <Radio value="true">{t('recurring')}</Radio>
-              <Radio value="false">{t('oneTime')}</Radio>
-            </RadioGroup>
-          )}
-        />
-        <Controller
-          control={control}
-          name="deduct_as_percentage"
-          render={({ field }) => (
-            <RadioGroup {...field}>
-              <Label>{t('deductAs')}</Label>
-              <Radio value="true">{t('percentageOfPay')}</Radio>
-              <Radio value="false">{t('fixedAmount')}</Radio>
-            </RadioGroup>
-          )}
-        />
-        <Controller
+          validationBehavior="aria"
+          label={t('frequency')}
+        >
+          <Radio value="true">{t('recurring')}</Radio>
+          <Radio value="false">{t('oneTime')}</Radio>
+        </RadioGroup>
+        <RadioGroup control={control} name="deduct_as_percentage" label={t('deductAs')}>
+          <Radio value="true">{t('percentageOfPay')}</Radio>
+          <Radio value="false">{t('fixedAmount')}</Radio>
+        </RadioGroup>
+        <NumberField
           control={control}
           name="amount"
-          render={({ field, fieldState: { invalid } }) => (
-            // TODO: Need to figure out a way to format the currency/percent. Note: amount does not contain fractional percentage value
-            <NumberField
-              {...field}
-              isInvalid={invalid}
-              formatOptions={{
-                style: watchedDeductAsPercentage === 'true' ? 'percent' : 'currency',
-                currency: currency,
-              }}
-            >
-              <Label>{t('amount')}</Label>
-              <Input />
-            </NumberField>
-          )}
+          label={t('amount')}
+          formatOptions={{
+            style: watchedDeductAsPercentage === 'true' ? 'percent' : 'currency',
+            currency: currency,
+          }}
         />
         {watchedRecurring === 'true' && (
-          <Controller
+          <NumberField
             control={control}
             name="annual_maximum"
-            render={({ field, fieldState: { invalid } }) => (
-              <NumberField
-                {...field}
-                isInvalid={invalid}
-                formatOptions={{
-                  style: 'currency',
-                  currency: currency,
-                  currencyDisplay: 'symbol',
-                }}
-              >
-                <Label>{t('annualMax')}</Label>
-                <Input />
-              </NumberField>
-            )}
+            label={t('annualMax')}
+            formatOptions={{
+              style: 'currency',
+              currency: currency,
+              currencyDisplay: 'symbol',
+            }}
           />
         )}
-        <Controller
-          control={control}
-          name="court_ordered"
-          render={({ field }) => (
-            <Checkbox {...field} value={field.value.toString()} isSelected={field.value}>
-              {t('courtOrdered')}
-            </Checkbox>
-          )}
-        />
+        <Checkbox control={control} name="court_ordered">
+          {t('courtOrdered')}
+        </Checkbox>
 
         <Flex>
           <Button

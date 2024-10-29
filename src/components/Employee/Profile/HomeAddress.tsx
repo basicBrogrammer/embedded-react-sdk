@@ -1,10 +1,9 @@
-import { FieldError, Input, Label, Link, ListBoxItem, TextField } from 'react-aria-components'
+import { Alert, Checkbox, Select, TextField } from '@/components/Common'
+import { STATES_ABBR } from '@/shared/constants'
+import { Link, ListBoxItem } from 'react-aria-components'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { Alert, Select } from '@/components/Common'
-import { Checkbox } from '@/components/Common'
-import { STATES_ABBR } from '@/shared/constants'
 
 export const HomeAddressSchema = v.object({
   street_1: v.pipe(v.string(), v.nonEmpty()),
@@ -31,90 +30,56 @@ export const HomeAddress = () => {
     <>
       <h2>{t('formTitle')}</h2>
       <p>{t('desc')}</p>
-      <Controller
+
+      <TextField
         control={control}
         name="street_1"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isRequired isInvalid={invalid} validationBehavior="aria">
-            <Label>{t('street1')}</Label>
-            <Input />
-            <FieldError>{t('validations.street1')}</FieldError>
-          </TextField>
-        )}
+        label={t('street1')}
+        isRequired
+        errorMessage={t('validations.street1')}
       />
-      <Controller
-        control={control}
-        name="street_2"
-        render={({ field }) => (
-          <TextField {...field} validationBehavior="aria">
-            <Label>{t('street2')}</Label>
-            <Input />
-          </TextField>
-        )}
-      />
-      <Controller
+      <TextField control={control} name="street_2" label={t('street2')} />
+      <TextField
         control={control}
         name="city"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isRequired isInvalid={invalid} validationBehavior="aria">
-            <Label>{t('city')}</Label>
-            <Input />
-            <FieldError>{t('validations.city')}</FieldError>
-          </TextField>
-        )}
+        isRequired
+        label={t('city')}
+        errorMessage={t('validations.city')}
       />
-      <Controller
+      <Select
         control={control}
         name="state"
-        render={({ field, fieldState: { invalid }, formState: { defaultValues } }) => (
-          <Select
-            {...field}
-            isInvalid={invalid}
-            items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-              name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
-              id: stateAbbr,
-            }))}
-            label={t('state')}
-            placeholder={t('statePlaceholder')}
-            errorMessage={t('validations.state')}
-            isRequired
-            validationBehavior="aria"
-            defaultSelectedKey={defaultValues?.state}
-          >
-            {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
-          </Select>
-        )}
-      />
-      <Controller
+        items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
+          name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
+          id: stateAbbr,
+        }))}
+        label={t('state')}
+        placeholder={t('statePlaceholder')}
+        errorMessage={t('validations.state')}
+        isRequired
+        validationBehavior="aria"
+      >
+        {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
+      </Select>
+      <TextField
         control={control}
         name="zip"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isRequired isInvalid={invalid} validationBehavior="aria">
-            <Label>{t('zip')}</Label>
-            <Input />
-            <FieldError>{t('validations.zip')}</FieldError>
-          </TextField>
-        )}
+        isRequired
+        label={t('zip')}
+        errorMessage={t('validations.zip')}
       />
-      <Controller
+      <Checkbox
         control={control}
         name="courtesy_withholding"
-        render={({ field }) => (
-          <Checkbox
-            {...field}
-            value={field.value.toString()}
-            isSelected={field.value}
-            description={
-              <>
-                {t('courtesyWhithholdingDescription')}
-                <Trans t={t} i18nKey="learnMoreCta" components={{ learnMore: <Link /> }} />
-              </>
-            }
-          >
-            {t('courtesyWithholdingLabel')}
-          </Checkbox>
-        )}
-      />
+        description={
+          <>
+            {t('courtesyWhithholdingDescription')}
+            <Trans t={t} i18nKey="learnMoreCta" components={{ learnMore: <Link /> }} />
+          </>
+        }
+      >
+        {t('courtesyWithholdingLabel')}
+      </Checkbox>
       {watchedCourtesyWithholding && (
         <Alert label={t('withholdingTitle')} variant="warning">
           <Trans t={t} i18nKey="withholdingNote" />

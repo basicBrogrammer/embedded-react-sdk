@@ -1,10 +1,17 @@
-import { NumberFormatter } from '@internationalized/number'
-import { Label, Input, FieldError, Link, ListBoxItem, TextField } from 'react-aria-components'
-import { Controller, useFormContext, useWatch } from 'react-hook-form'
-import { useTranslation, Trans } from 'react-i18next'
-import { Button, Flex, NumberField, Select, type SelectCategory } from '@/components/Common'
+import {
+  Button,
+  Flex,
+  NumberField,
+  Select,
+  type SelectCategory,
+  TextField,
+} from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
+import { NumberFormatter } from '@internationalized/number'
+import { Link, ListBoxItem } from 'react-aria-components'
+import { useFormContext, useWatch } from 'react-hook-form'
+import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './Compensation'
 
 export const Edit = () => {
@@ -38,107 +45,71 @@ export const Edit = () => {
   const formatter = new NumberFormatter(locale, { style: 'currency', currency: currency })
   return (
     <>
-      <Controller
+      <TextField
         control={control}
         name="job_title"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isInvalid={invalid} isRequired validationBehavior="aria">
-            <Label>{t('jobTitle')}</Label>
-            <Input />
-            <FieldError>{t('validations.title')}</FieldError>
-          </TextField>
-        )}
+        label={t('jobTitle')}
+        isRequired
+        errorMessage={t('validations.title')}
       />
       {/* hiding flsa selection for secondary jobs */}
       {primaryFlsaStatus === FlsaStatus.NONEXEMPT && !currentJob?.primary && (
         <input type="hidden" {...register('flsa_status')} />
       )}
       {(primaryFlsaStatus !== FlsaStatus.NONEXEMPT || currentJob?.primary) && (
-        <Controller
+        <Select
           control={control}
           name="flsa_status"
-          render={({ field, fieldState: { invalid, error }, formState: { defaultValues } }) => (
-            <Select
-              {...field}
-              isInvalid={invalid}
-              label={t('employeeClassification')}
-              description={
-                <Trans
-                  t={t}
-                  i18nKey="classificationCTA"
-                  components={{ classificationCta: <Link /> }}
-                />
-              }
-              errorMessage={
-                error?.type === 'check'
-                  ? t('validations.exemptThreshold', {
-                      limit: formatter.format(FLSA_OVERTIME_SALARY_LIMIT),
-                    })
-                  : error?.message
-              }
-              onChange={(val: string) => {
-                handleFlsaChange(val)
-                field.onChange(val)
-              }}
-              items={classificationOptions}
-              isRequired
-              isDisabled={primaryFlsaStatus === FlsaStatus.NONEXEMPT && !currentJob?.primary}
-              validationBehavior="aria"
-              defaultSelectedKey={defaultValues?.flsa_status}
-            >
-              {(classification: SelectCategory) => <ListBoxItem>{classification.name}</ListBoxItem>}
-            </Select>
-          )}
-        />
+          label={t('employeeClassification')}
+          description={
+            <Trans t={t} i18nKey="classificationCTA" components={{ classificationCta: <Link /> }} />
+          }
+          errorMessage={t('validations.exemptThreshold', {
+            limit: formatter.format(FLSA_OVERTIME_SALARY_LIMIT),
+          })}
+          items={classificationOptions}
+          isRequired
+          isDisabled={primaryFlsaStatus === FlsaStatus.NONEXEMPT && !currentJob?.primary}
+          validationBehavior="aria"
+          onSelectionChange={handleFlsaChange}
+        >
+          {(classification: SelectCategory) => <ListBoxItem>{classification.name}</ListBoxItem>}
+        </Select>
       )}
-      <Controller
+      <NumberField
         control={control}
         name="rate"
-        render={({ field, fieldState: { invalid } }) => (
-          <NumberField
-            {...field}
-            label={t('amount')}
-            formatOptions={{
-              style: 'currency',
-              currency: currency,
-              currencyDisplay: 'symbol',
-            }}
-            validationBehavior="aria"
-            minValue={0}
-            isInvalid={invalid}
-            isDisabled={
-              watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
-              watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
-            }
-          />
-        )}
+        label={t('amount')}
+        formatOptions={{
+          style: 'currency',
+          currency: currency,
+          currencyDisplay: 'symbol',
+        }}
+        validationBehavior="aria"
+        minValue={0}
+        isDisabled={
+          watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+          watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+        }
       />
-      <Controller
+      <Select
         control={control}
         name="payment_unit"
-        render={({ field, fieldState: { invalid }, formState: { defaultValues } }) => (
-          <Select
-            {...field}
-            label={t('paymentUnitLabel')}
-            description={t('paymentUnitDescription')}
-            items={paymentUnitOptions}
-            defaultSelectedKey={defaultValues?.payment_unit}
-            selectedKey={field.value}
-            isInvalid={invalid}
-            isDisabled={
-              watchFlsaStatus === FlsaStatus.OWNER ||
-              watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
-              watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
-            }
-            validationBehavior="aria"
-            errorMessage={t('validations.paymentUnit')}
-          >
-            {(category: { id: string; name: string }) => (
-              <ListBoxItem id={category.id}>{category.name}</ListBoxItem>
-            )}
-          </Select>
+        label={t('paymentUnitLabel')}
+        description={t('paymentUnitDescription')}
+        items={paymentUnitOptions}
+        errorMessage={t('validations.paymentUnit')}
+        isDisabled={
+          watchFlsaStatus === FlsaStatus.OWNER ||
+          watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+          watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+        }
+        validationBehavior="aria"
+      >
+        {(category: { id: string; name: string }) => (
+          <ListBoxItem id={category.id}>{category.name}</ListBoxItem>
         )}
-      />
+      </Select>
       {watchFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'SINGLE' && (
         <Button
           variant="link"
