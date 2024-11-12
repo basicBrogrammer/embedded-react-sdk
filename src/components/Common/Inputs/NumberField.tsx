@@ -1,3 +1,5 @@
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { useLocale } from '@/contexts/LocaleProvider'
 import { RefAttributes } from 'react'
 import {
   NumberField as AriaNumberField,
@@ -17,8 +19,7 @@ type NumberFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   description?: React.ReactNode
   errorMessage?: string | ((validation: ValidationResult) => string)
   isRequired?: boolean
-  isPercent?: boolean
-  placeholder?: string
+  style?: 'currency' | 'decimal' | 'percent'
 } & (
   | {
       label?: string
@@ -39,17 +40,18 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
   description,
   errorMessage,
   isRequired,
-  placeholder,
+  style,
   ...props
 }: NumberFieldProps<C, N>) {
   const {
     field,
     fieldState: { invalid },
   } = useController({ name, control })
-
+  const { currency } = useLocale()
   return (
     <AriaNumberField
       {...field}
+      formatOptions={{ style: style === 'currency' ? 'currency' : 'decimal', currency }}
       {...props}
       isInvalid={invalid}
       isRequired={isRequired}
@@ -58,7 +60,8 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
       {label ? <Label>{label}</Label> : null}
       {description ? <Text slot="description">{description}</Text> : null}
       <Group>
-        <Input placeholder={placeholder ?? ''} />
+        <Input />
+        {style === 'percent' ? <span>%</span> : null}
       </Group>
       {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
     </AriaNumberField>
