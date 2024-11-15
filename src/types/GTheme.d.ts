@@ -124,6 +124,7 @@ export interface GThemeRadio {
   focusRingColor: ThemeColor
   errorBorderColor: ThemeColor
   errorLabelColor: ThemeColor
+  borderWidth: string
 }
 export interface GThemeCheckbox {
   borderColor: ThemeColor
