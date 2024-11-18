@@ -64,7 +64,6 @@ const Root = ({ employeeId, className }: SummaryProps) => {
         {onboarding_steps?.map(step => (
           <li key={step.id}>
             {step.completed ? '✓' : '-'}
-            {/* eslint-disable @typescript-eslint/restrict-template-expressions */}
             {t(`steps.${step.id}`, step.title)}
           </li>
         ))}
