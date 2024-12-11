@@ -366,7 +366,7 @@ export interface EmployeeTaxes{
 "federalFilingStatus1c":string;
 "federalFillingStatusPlaceholder":string;
 "federalTaxesTitle":string;
-"filingStatusExemptFromWitholding":string;
+"filingStatusExemptFromWithholding":string;
 "filingStatusHeadOfHousehold":string;
 "filingStatusMarried":string;
 "filingStatusSingle":string;
