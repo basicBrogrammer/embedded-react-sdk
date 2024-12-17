@@ -30,15 +30,16 @@ import {
   useUpdateEmployeeFederalTaxes,
   useUpdateEmployeeStateTaxes,
 } from '@/api/queries/employee'
-import { ApiError } from '@/api/queries/helpers'
 import { useEffect } from 'react'
 
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string
+  isAdmin: boolean
 }
 type TaxesContextType = {
   employeeStateTaxes: Schemas['Employee-State-Tax'][]
   isPending: boolean
+  isAdmin: boolean
 }
 
 const [useTaxes, TaxesProvider] = createCompoundContext<TaxesContextType>('TaxesContext')
@@ -54,7 +55,7 @@ export function Taxes(props: TaxesProps & BaseComponentInterface) {
 
 const Root = (props: TaxesProps) => {
   const { employeeId, className, children } = props
-  const { setError, onEvent, throwError, fieldErrors } = useBase()
+  const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
 
   const { data: employeeFederalTaxes } = useGetEmployeeFederalTaxes(employeeId)
@@ -101,9 +102,9 @@ const Root = (props: TaxesProps) => {
   const federalTaxesMutation = useUpdateEmployeeFederalTaxes(employeeId)
   const stateTaxesMutation = useUpdateEmployeeStateTaxes(employeeId)
 
-  const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = async payload => {
-    const { states: statesPayload, ...federalPayload } = payload
-    try {
+  const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = data => {
+    baseSubmitHandler(data, async payload => {
+      const { states: statesPayload, ...federalPayload } = payload
       //Federal Taxes
       const federalTaxesResponse = await federalTaxesMutation.mutateAsync({
         body: {
@@ -132,11 +133,7 @@ const Root = (props: TaxesProps) => {
       const stateTaxesResponse = await stateTaxesMutation.mutateAsync({ body })
       onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
       onEvent(componentEvents.EMPLOYEE_TAXES_DONE)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
 
   return (
@@ -144,6 +141,7 @@ const Root = (props: TaxesProps) => {
       <TaxesProvider
         value={{
           employeeStateTaxes,
+          isAdmin: props.isAdmin,
           isPending: federalTaxesMutation.isPending || stateTaxesMutation.isPending,
         }}
       >
@@ -171,7 +169,7 @@ Taxes.StateForm = StateForm
 Taxes.Actions = Actions
 
 export const TaxesContextual = () => {
-  const { employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation()
   if (!employeeId) {
     throw new Error(
@@ -182,5 +180,5 @@ export const TaxesContextual = () => {
       }),
     )
   }
-  return <Taxes employeeId={employeeId} onEvent={onEvent} />
+  return <Taxes employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin ?? false} />
 }
