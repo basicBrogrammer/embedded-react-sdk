@@ -27,7 +27,6 @@ import {
   useUpdateEmployeeWorkAddress,
 } from '@/api/queries/employee'
 import { useCreateEmployee, useGetCompanyLocations } from '@/api/queries/company'
-import { ApiError } from '@/api/queries/helpers'
 import { Schemas } from '@/types/schema'
 import { OnboardingFlow } from '@/types/Employee'
 
@@ -183,8 +182,8 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
     useUpdateEmployeeHomeAddress()
   const { mutateAsync: createEmployeeJob, isPending: isPendingCreateJob } = useCreateEmployeeJob()
 
-  const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = data => {
-    baseSubmitHandler(data, async payload => {
+  const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
+    await baseSubmitHandler(data, async payload => {
       const {
         work_address,
         start_date,

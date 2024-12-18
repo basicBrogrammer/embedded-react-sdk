@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { GTheme } from '@/types/GTheme'
 import { defaultTheme } from './DefaultTheme'
 import '@/styles/sdk.scss'
+import { DeepPartial } from '@/types/Helpers'
 
 export interface ThemeProviderProps {
-  theme?: GTheme
+  theme?: DeepPartial<GTheme>
   children?: React.ReactNode
 }
 export interface ThemeContextProps {
@@ -30,7 +31,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     /**
      * Merging partner overrides into default theme and injecting flattened css variables into document(scoped to .GSDK)
      */
-    const mergedTheme = merge(defaultTheme, partnerTheme)
+    const mergedTheme = merge<GTheme, DeepPartial<GTheme>>(defaultTheme, partnerTheme)
 
     if (GThemeVariables.current) {
       GThemeVariables.current.remove()

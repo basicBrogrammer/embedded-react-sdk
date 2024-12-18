@@ -183,8 +183,8 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     resetForm(defaultValues)
   }, [bankAccounts.length, paymentMethod, defaultValues, resetForm])
 
-  const onSubmit: SubmitHandler<CombinedSchemaInputs> = data => {
-    baseSubmitHandler(data, async payload => {
+  const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
+    await baseSubmitHandler(data, async payload => {
       const { type } = payload
       if (
         type === 'Direct Deposit' &&
