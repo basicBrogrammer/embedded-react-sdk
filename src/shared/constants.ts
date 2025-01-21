@@ -42,6 +42,7 @@ export const employeeEvents = {
   EMPLOYEE_VIEW_FORM_TO_SIGN: 'employee/forms/view',
   EMPLOYEE_SIGN_FORM: 'employee/forms/sign',
   EMPLOYEE_FORMS_DONE: 'employee/forms/done',
+  EMPLOYEE_ONBOARDING_STATUS_UPDATED: 'employee/onboardingStatus/updated',
 } as const
 
 export const companyEvents = {
@@ -73,7 +74,13 @@ export const EmployeeOnboardingStatus = {
   SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE: 'self_onboarding_completed_by_employee',
   SELF_ONBOARDING_AWAITING_ADMIN_REVIEW: 'self_onboarding_awaiting_admin_review',
   ONBOARDING_COMPLETED: 'onboarding_completed',
-}
+} as const
+
+export const EmployeeSelfOnboardingStatuses = new Set([
+  EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED,
+  EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED,
+  EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE,
+])
 /**Map of API response flsa statuses */
 export const FlsaStatus = {
   EXEMPT: 'Exempt',

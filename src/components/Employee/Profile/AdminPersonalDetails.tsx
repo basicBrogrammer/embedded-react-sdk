@@ -45,7 +45,7 @@ export const AdminPersonalDetailsSchema = v.variant('self_onboarding', [
 ])
 
 export const AdminPersonalDetails = () => {
-  const { companyLocations, employee, flow } = useProfile()
+  const { companyLocations, employee, isAdmin } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   const { control, watch, setValue, getFieldState } = useFormContext<PersonalDetailsInputs>()
 
@@ -60,7 +60,7 @@ export const AdminPersonalDetails = () => {
     }
   }, [isSelfOnboardingChecked, employee?.has_ssn, isSsnDirty, setValue])
 
-  if (flow !== 'admin') {
+  if (!isAdmin) {
     return null
   }
 
@@ -73,7 +73,9 @@ export const AdminPersonalDetails = () => {
         name="self_onboarding"
         isDisabled={
           employee?.onboarded ||
-          employee?.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED
+          employee?.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+          employee?.onboarding_status ===
+            EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
         }
       >
         {t('selfOnboardingLabel')}

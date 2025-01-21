@@ -195,6 +195,8 @@ export interface EmployeeEmployeeList{
 "deductionsCta":string;
 "deleteCta":string;
 "editCta":string;
+"cancelSelfOnboardingCta":string;
+"reviewCta":string;
 "employeeListLabel":string;
 "emptyTableDescription":string;
 "emptyTableTitle":string;
@@ -250,6 +252,8 @@ export interface EmployeeOnboardingSummary{
 "returnToEmployeeListCta":string;
 "addAnotherCta":string;
 "newHireReportCta":string;
+"missingRequirementsSubtitle":string;
+"missingRequirementsDescription":string;
 "steps":{
 "personal_details":string;
 "compensation_details":string;
@@ -260,6 +264,19 @@ export interface EmployeeOnboardingSummary{
 "direct_deposit_setup":string;
 "employee_form_signing":string;
 "file_new_hire_report":string;
+"admin_review":string;
+}
+"stepsDescriptions":{
+"personal_details":string;
+"compensation_details":string;
+"add_work_address":string;
+"add_home_address":string;
+"federal_tax_setup":string;
+"state_tax_setup":string;
+"direct_deposit_setup":string;
+"employee_form_signing":string;
+"file_new_hire_report":string;
+"admin_review":string;
 }
 };
 export interface EmployeePaySchedules{

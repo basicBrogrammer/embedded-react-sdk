@@ -1,8 +1,8 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Form } from 'react-aria-components'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import {
@@ -14,21 +14,24 @@ import {
 } from '@/components/Base'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
-import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
+import {
+  componentEvents,
+  EmployeeOnboardingStatus,
+  EmployeeSelfOnboardingStatuses,
+} from '@/shared/constants'
 import {
   useAddEmployeeHomeAddress,
   useAddEmployeeWorkAddress,
-  useCreateEmployeeJob,
   useGetEmployee,
   useGetEmployeeHomeAddresses,
   useGetEmployeeWorkAddresses,
   useUpdateEmployee,
   useUpdateEmployeeHomeAddress,
+  useUpdateEmployeeOnboardingStatus,
   useUpdateEmployeeWorkAddress,
 } from '@/api/queries/employee'
 import { useCreateEmployee, useGetCompanyLocations } from '@/api/queries/company'
 import { Schemas } from '@/types/schema'
-import { OnboardingFlow } from '@/types/Employee'
 
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
 import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
@@ -57,7 +60,7 @@ interface ProfileProps extends CommonComponentInterface {
       zip?: string
     }
   }
-  flow?: OnboardingFlow
+  isAdmin?: boolean
 }
 
 //Interface for context passed down to component slots
@@ -65,9 +68,10 @@ type ProfileContextType = {
   companyLocations: Schemas['Location'][]
   workAddresses: Schemas['Employee-Work-Address'][] | null
   employee?: Schemas['Employee']
+  isSelfOnboardingIntended?: boolean
   isPending: boolean
+  isAdmin: boolean
   handleCancel: () => void
-  flow: OnboardingFlow
 }
 
 const [useProfile, ProfileProvider] = createCompoundContext<ProfileContextType>('ProfileContext')
@@ -81,7 +85,7 @@ export function Profile(props: ProfileProps & BaseComponentInterface) {
   )
 }
 
-const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
+const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
   const { companyId, employeeId, children, className = '', defaultValues } = props
@@ -92,8 +96,6 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
   const { data: homeAddresses } = useGetEmployeeHomeAddresses(employeeId)
 
   const existingData = { employee, workAddresses, homeAddresses }
-
-  const isSelfOnboarding = flow === 'self'
 
   const currentHomeAddress = homeAddresses
     ? homeAddresses.find(address => address.active)
@@ -143,7 +145,10 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
           ...initialValues,
-          self_onboarding: false,
+          self_onboarding: mergedData.current.employee?.onboarding_status
+            ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+              EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
+            : false,
           enableSsn: !mergedData.current.employee?.has_ssn,
           ssn: '',
         } // In edit mode ssn is submitted only if it has been modified
@@ -161,14 +166,15 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
   >({
     resolver: valibotResolver(
       v.intersect([
-        isSelfOnboarding ? SelfPersonalDetailsSchema : AdminPersonalDetailsSchema,
+        isAdmin ? AdminPersonalDetailsSchema : SelfPersonalDetailsSchema,
         HomeAddressSchema,
       ]),
     ),
-    defaultValues: isSelfOnboarding ? selfDetaultValues : adminDefaultValues,
+    defaultValues: isAdmin ? adminDefaultValues : selfDetaultValues,
   })
 
   const { handleSubmit } = formMethods
+  const watchedSelfOnboarding = useWatch({ control: formMethods.control, name: 'self_onboarding' })
 
   const { mutateAsync: createEmployee, isPending: isPendingCreateEmployee } = useCreateEmployee()
   const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } = useUpdateEmployee()
@@ -180,32 +186,51 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
     useAddEmployeeHomeAddress()
   const { mutateAsync: mutateEmployeeHomeAddress, isPending: isPendingUpdateHA } =
     useUpdateEmployeeHomeAddress()
-  const { mutateAsync: createEmployeeJob, isPending: isPendingCreateJob } = useCreateEmployeeJob()
+  const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
   const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const {
-        work_address,
-        start_date,
-        city,
-        courtesy_withholding,
-        state,
-        street_1,
-        street_2,
-        zip,
-        ...body
-      } = payload
+      const { work_address, start_date, self_onboarding, ...body } = payload
       //create or update employee
       if (!mergedData.current.employee) {
-        const employeeData = await createEmployee({ company_id: companyId, body })
+        const employeeData = await createEmployee({
+          company_id: companyId,
+          body: { ...body, self_onboarding },
+        })
         mergedData.current = { ...mergedData.current, employee: employeeData }
         onEvent(componentEvents.EMPLOYEE_CREATED, employeeData)
       } else {
-        //self_onboarding is not accepted in PUT request
-        const { self_onboarding, ...cleanedBody } = body
+        // Updating self-onboarding status
+        if (
+          (self_onboarding &&
+            mergedData.current.employee.onboarding_status ===
+              EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
+          (!self_onboarding &&
+            mergedData.current.employee.onboarding_status ===
+              EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+        ) {
+          const updateEmployeeOnboardingStatusResult =
+            await updateEmployeeOnboardingStatusMutation.mutateAsync({
+              employeeId: mergedData.current.employee.uuid,
+              body: {
+                onboarding_status: self_onboarding
+                  ? EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
+                  : EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+              },
+            })
+          mergedData.current.employee = {
+            ...mergedData.current.employee,
+            onboarding_status:
+              updateEmployeeOnboardingStatusResult.onboarding_status as (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus],
+          }
+          onEvent(
+            componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
+            updateEmployeeOnboardingStatusResult,
+          )
+        }
         const employeeData = await mutateEmployee({
           employee_id: mergedData.current.employee.uuid,
-          body: { ...cleanedBody, version: mergedData.current.employee.version as string },
+          body: { ...body, version: mergedData.current.employee.version as string },
         })
         mergedData.current = { ...mergedData.current, employee: employeeData }
         onEvent(componentEvents.EMPLOYEE_UPDATED, employeeData)
@@ -213,40 +238,46 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
       if (typeof mergedData.current.employee?.uuid !== 'string') {
         throw new Error('Employee id is not available')
       }
-      //create or update home address
-      if (!mergedData.current.homeAddress) {
-        // Creating home address - for new employee effective_date is the same as work start date
-        const homeAddressData = await createEmployeeHomeAddress({
-          employee_id: mergedData.current.employee.uuid,
-          body: {
-            street_1,
-            street_2,
-            city,
-            state,
-            zip,
-            courtesy_withholding,
-          },
-        })
-        mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
-        onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, homeAddressData)
-      } else {
-        const homeAddressData = await mutateEmployeeHomeAddress({
-          home_address_uuid: mergedData.current.homeAddress.uuid as string,
-          body: {
-            version: mergedData.current.homeAddress.version as string,
-            street_1,
-            street_2,
-            city,
-            state,
-            zip,
-            courtesy_withholding,
-          },
-        })
-        mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
-        onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, homeAddressData)
+      //create or update home address - only if not intended for self onboarding
+      if (!watchedSelfOnboarding || !isAdmin) {
+        //typeguard: in this scenario payload will contain address information
+        if (!payload.self_onboarding) {
+          const { street_1, street_2, city, state, zip, courtesy_withholding } = payload
+          if (!mergedData.current.homeAddress) {
+            // Creating home address - for new employee effective_date is the same as work start date
+            const homeAddressData = await createEmployeeHomeAddress({
+              employee_id: mergedData.current.employee.uuid,
+              body: {
+                street_1,
+                street_2,
+                city,
+                state,
+                zip,
+                courtesy_withholding,
+              },
+            })
+            mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
+            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, homeAddressData)
+          } else {
+            const homeAddressData = await mutateEmployeeHomeAddress({
+              home_address_uuid: mergedData.current.homeAddress.uuid as string,
+              body: {
+                version: mergedData.current.homeAddress.version as string,
+                street_1,
+                street_2,
+                city,
+                state,
+                zip,
+                courtesy_withholding,
+              },
+            })
+            mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
+            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, homeAddressData)
+          }
+        }
       }
 
-      if (!isSelfOnboarding) {
+      if (isAdmin) {
         //create or update workaddress
         if (!mergedData.current.workAddress) {
           const workAddressData = await createEmployeeWorkAddress({
@@ -288,16 +319,16 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
           companyLocations,
           workAddresses,
           employee: mergedData.current.employee ?? undefined,
+          isSelfOnboardingIntended: watchedSelfOnboarding,
           handleCancel,
+          isAdmin,
           isPending:
             isPendingEmployeeUpdate ||
             isPendingWorkAddressUpdate ||
             isPendingAddHA ||
             isPendingUpdateHA ||
             isPendingCreateEmployee ||
-            isPendingCreateJob ||
             isPendingCreateWA,
-          flow,
         }}
       >
         <FormProvider {...formMethods}>
@@ -329,7 +360,7 @@ Profile.HomeAddress = HomeAddress
 Profile.WorkAddress = WorkAddress
 
 export const ProfileContextual = () => {
-  const { companyId, employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { companyId, employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation()
 
   if (!companyId) {
@@ -341,5 +372,7 @@ export const ProfileContextual = () => {
       }),
     )
   }
-  return <Profile companyId={companyId} employeeId={employeeId} onEvent={onEvent} />
+  return (
+    <Profile companyId={companyId} employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
+  )
 }

@@ -76,7 +76,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
         field.onChange(key)
       }}
       defaultSelectedKey={defaultSelectedKey ?? field.value}
-      selectedKey={field.value}
+      selectedKey={field.value ?? null}
     >
       <div className="input-text-stack">
         <Label>{label}</Label>
