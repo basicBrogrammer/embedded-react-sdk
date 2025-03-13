@@ -83,7 +83,7 @@ const getFieldErrors = (
   if (error.category === 'invalid_attribute_value') {
     return [
       {
-        key: keyPrefix + ('error_key' in error ? error.error_key : (error.errorKey ?? '')),
+        key: keyPrefix + ('error_key' in error ? error.error_key : error.errorKey),
         message: error.message ?? '',
       },
     ]
@@ -106,7 +106,9 @@ const getFieldErrors = (
   }
   return []
 }
+
 type SubmitHandler<T> = (data: T) => Promise<void>
+
 export const BaseComponent: FC<BaseComponentInterface> = ({
   children,
   FallbackComponent = InternalError,
