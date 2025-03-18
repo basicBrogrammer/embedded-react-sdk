@@ -63,9 +63,9 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   const [itemsPerPage, setItemsPerPage] = useState(5)
   const queryClient = useQueryClient()
 
-  const {
-    data: { employeeList: employees, httpMeta },
-  } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
+  const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
+  const { httpMeta, employeeList } = data
+  const employees = employeeList!
 
   const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()
   const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
@@ -144,7 +144,6 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           handleNew,
           handleReview,
           handleDelete,
-          // @ts-expect-error HACK fix employee typing inconsistency
           employees,
           currentPage,
           totalPages,
