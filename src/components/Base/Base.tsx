@@ -1,23 +1,14 @@
-import {
-  Suspense,
-  useState,
-  useContext,
-  createContext,
-  ReactNode,
-  FC,
-  useCallback,
-  JSX,
-} from 'react'
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
+import type { ReactNode, FC, JSX } from 'react'
+import { Suspense, useState, useContext, createContext, useCallback } from 'react'
+import type { FallbackProps } from 'react-error-boundary'
+import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
-import { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
-import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
+import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
-import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void
@@ -36,7 +27,7 @@ export interface BaseComponentInterface {
   children?: ReactNode
 }
 
-type KnownErrors = ApiError | APIError | SDKValidationError | UnprocessableEntityErrorObject
+type KnownErrors = APIError | SDKValidationError | UnprocessableEntityErrorObject
 
 type FieldError = {
   key: string
@@ -44,7 +35,7 @@ type FieldError = {
 }
 interface BaseContextProps {
   fieldErrors: FieldError[] | null
-  setError: (err: ApiError) => void
+  setError: (err: KnownErrors) => void
   onEvent: OnEventType<EventType, unknown>
   throwError: (e: unknown) => void
   baseSubmitHandler: <T>(
@@ -76,17 +67,14 @@ const renderErrorList = (errorList: FieldError[]): React.ReactNode => {
  * metadata.state is a special case for state taxes validation errors
  */
 const getFieldErrors = (
-  error: ApiErrorMessage | EntityErrorObject,
+  error: EntityErrorObject,
   parentKey?: string,
 ): { key: string; message: string }[] => {
-  //TODO: remove ApiErrorMessage and cammel case safety once transitioned to speakeasy
   const keyPrefix = parentKey ? parentKey + '.' : ''
   if (error.category === 'invalid_attribute_value') {
     return [
       {
-        key: snakeCaseToCamelCase(
-          keyPrefix + ('error_key' in error ? error.error_key : error.errorKey),
-        ),
+        key: keyPrefix + error.errorKey,
         message: error.message ?? '',
       },
     ]
@@ -102,9 +90,7 @@ const getFieldErrors = (
           error.metadata?.state && typeof error.metadata.state === 'string'
           ? //@ts-expect-error: Metadata in speakeasy is incorrectly typed
             (error.metadata.state as string)
-          : 'error_key' in error
-            ? error.error_key
-            : ''
+          : ''
     return error.errors.flatMap(err => getFieldErrors(err, keyPrefix + keySuffix))
   }
   return []
@@ -124,11 +110,11 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const { t } = useTranslation()
 
   const processError = (error: KnownErrors) => {
-    //Legacy React SDK error class:
-    //TODO: remove once switched to speakeasy
-    if (error instanceof ApiError) {
-      setFieldErrors(error.errorList ? error.errorList.flatMap(err => getFieldErrors(err)) : null)
-    }
+    // //Legacy React SDK error class:
+    // //TODO: remove once switched to speakeasy
+    // if (error instanceof ApiError) {
+    //   setFieldErrors(error.errorList ? error.errorList.flatMap(err => getFieldErrors(err)) : null)
+    // }
 
     //Speakeasy response handling
     // The server response does not match the expected SDK schema
@@ -153,7 +139,6 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
         await componentHandler(data)
       } catch (err) {
         if (
-          err instanceof ApiError ||
           err instanceof APIError ||
           err instanceof SDKValidationError ||
           err instanceof UnprocessableEntityErrorObject
