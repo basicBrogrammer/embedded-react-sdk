@@ -1,10 +1,10 @@
-import { Link, ListBoxItem } from 'react-aria-components'
+import { Link } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useProfile } from './useProfile'
 import { STATES_ABBR } from '@/shared/constants'
-import { Alert, Checkbox, Grid, Select, TextInputField } from '@/components/Common'
+import { Alert, Checkbox, Grid, SelectField, TextInputField } from '@/components/Common'
 
 export const HomeAddressSchema = v.variant('selfOnboarding', [
   v.object({
@@ -61,21 +61,17 @@ export const HomeAddress = () => {
           label={t('city')}
           errorMessage={t('validations.city')}
         />
-        <Select
-          control={control}
+        <SelectField
           name="state"
-          items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-            name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
-            id: stateAbbr,
+          options={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
+            label: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
+            value: stateAbbr,
           }))}
           label={t('state')}
           placeholder={t('statePlaceholder')}
           errorMessage={t('validations.state')}
           isRequired
-          validationBehavior="aria"
-        >
-          {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
-        </Select>
+        />
         <TextInputField
           name="zip"
           isRequired

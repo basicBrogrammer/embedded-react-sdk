@@ -1,27 +1,25 @@
 import { useMemo } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
-import { useFormContext } from 'react-hook-form'
-import { ListBoxItem, Link } from 'react-aria-components'
+import { Link } from 'react-aria-components'
 import {
   TaxPayerType,
   FilingForm,
 } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
-import { type FederalTaxFormInputs, useFederalTaxes } from './useFederalTaxes'
-import { TextInputField, Select, Flex } from '@/components/Common'
+import { useFederalTaxes } from './useFederalTaxes'
+import { TextInputField, SelectField, Flex } from '@/components/Common'
 import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'
 
 export function Form() {
   const { t } = useTranslation('Company.FederalTaxes')
   const { federalTaxDetails } = useFederalTaxes()
-  const { control } = useFormContext<FederalTaxFormInputs>()
 
   const placeholderEin = usePlaceholderEin(federalTaxDetails?.hasEin)
 
   const taxPayerTypeOptions = useMemo(
     () =>
       Object.values(TaxPayerType).map(value => ({
-        id: value,
-        name: t(`taxPayerType.${value}`),
+        value: value,
+        label: t(`taxPayerType.${value}`),
       })),
     [t],
   )
@@ -29,8 +27,8 @@ export function Form() {
   const filingFormOptions = useMemo(
     () =>
       Object.values(FilingForm).map(value => ({
-        id: value,
-        name: t(`filingForm.${value}`),
+        value: value,
+        label: t(`filingForm.${value}`),
       })),
     [t],
   )
@@ -59,17 +57,14 @@ export function Form() {
         transform={e => normalizeEin(e.target.value)}
         placeholder={placeholderEin}
       />
-      <Select
+      <SelectField
         name="taxPayerType"
         label={t('taxpayer_type_label')}
         description={t('taxpayer_type_description')}
-        control={control}
-        items={taxPayerTypeOptions}
+        options={taxPayerTypeOptions}
         isRequired
-      >
-        {option => <ListBoxItem>{option.name}</ListBoxItem>}
-      </Select>
-      <Select
+      />
+      <SelectField
         name="filingForm"
         label={t('federal_filing_form_label')}
         description={
@@ -87,12 +82,9 @@ export function Form() {
             }}
           />
         }
-        control={control}
-        items={filingFormOptions}
+        options={filingFormOptions}
         isRequired
-      >
-        {option => <ListBoxItem>{option.name}</ListBoxItem>}
-      </Select>
+      />
       <TextInputField
         name="legalName"
         label={t('legal_entity_name_label')}

@@ -1,8 +1,8 @@
-import { Link, ListBoxItem } from 'react-aria-components'
+import { Link } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { NumberInputField, RadioGroup, Select } from '@/components/Common'
+import { NumberInputField, RadioGroup, SelectField } from '@/components/Common'
 
 export const FederalFormSchema = v.object({
   filingStatus: v.pipe(v.string(), v.nonEmpty()),
@@ -22,25 +22,22 @@ export function FederalForm() {
   const { t } = useTranslation('Employee.Taxes')
 
   const filingStatusCategories = [
-    { id: 'Single', name: t('filingStatusSingle') },
-    { id: 'Married', name: t('filingStatusMarried') },
-    { id: 'Head of Household', name: t('filingStatusHeadOfHousehold') },
-    { id: 'Exempt from withholding', name: t('filingStatusExemptFromWithholding') },
+    { value: 'Single', label: t('filingStatusSingle') },
+    { value: 'Married', label: t('filingStatusMarried') },
+    { value: 'Head of Household', label: t('filingStatusHeadOfHousehold') },
+    { value: 'Exempt from withholding', label: t('filingStatusExemptFromWithholding') },
   ]
 
   return (
     <>
-      <Select
-        control={control}
+      <SelectField
         name="filingStatus"
         label={t('federalFilingStatus1c')}
         placeholder={t('federalFillingStatusPlaceholder')}
-        items={filingStatusCategories}
+        options={filingStatusCategories}
         isRequired
         errorMessage={t('validations.federalFilingStatus')}
-      >
-        {category => <ListBoxItem>{category.name}</ListBoxItem>}
-      </Select>
+      />
       <RadioGroup
         control={control}
         name="twoJobs"
