@@ -6,8 +6,7 @@ import {
   TaxPayerType,
   FilingForm,
 } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
-import type { FederalTaxFormInputs } from './FederalTaxes'
-import { useFederalTaxes } from './FederalTaxes'
+import { type FederalTaxFormInputs, useFederalTaxes } from './useFederalTaxes'
 import { TextInputField, Select, Flex } from '@/components/Common'
 import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'
 
