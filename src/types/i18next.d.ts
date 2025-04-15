@@ -608,6 +608,7 @@ export interface EmployeeTaxes{
 "filingStatusHeadOfHousehold":string;
 "filingStatusMarried":string;
 "filingStatusSingle":string;
+"fieldIsRequired":string;
 "includesSpouseExplanation":string;
 "irs_calculator":string;
 "irsCalculatorOrW4Line":string;
