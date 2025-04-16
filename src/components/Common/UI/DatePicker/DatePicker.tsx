@@ -15,7 +15,7 @@ import {
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { CalendarDate } from '@internationalized/date'
+import { parseDate } from '@internationalized/date'
 import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
@@ -24,26 +24,18 @@ import { useTheme } from '@/contexts/ThemeProvider'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
+import { formateDateToStringDate } from '@/helpers/dateFormatting'
 
-// Utility functions to convert between Date and DateValue
-function dateToCalendarDateValue(date: Date | null | undefined): DateValue | null {
-  if (!date) return null
-
-  return new CalendarDate(
-    date.getFullYear(),
-    date.getMonth() + 1, // JavaScript months are 0-indexed
-    date.getDate(),
-  )
-}
-
-function dateValueToDate(dateValue: DateValue | null): Date | null {
+function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
   if (!dateValue) return null
 
-  return new Date(
+  const date = new Date(
     dateValue.year,
     dateValue.month - 1, // DateValue months are 1-indexed
     dateValue.day,
   )
+
+  return date
 }
 
 export interface DatePickerProps
@@ -83,12 +75,14 @@ export const DatePicker = ({
   const { container } = useTheme()
 
   // Convert JavaScript Date to DateValue for internal use
-  const internalValue = dateToCalendarDateValue(value)
+  // Format the date as YYYY-MM-DD for parseDate
+  const formattedDate = value ? formateDateToStringDate(value) : ''
+  const internalValue = formattedDate ? parseDate(formattedDate) : null
 
   // Handle internal onChange to convert DateValue back to Date
   const handleChange = (dateValue: DateValue | null) => {
     if (onChange) {
-      onChange(dateValueToDate(dateValue))
+      onChange(calendarDateValueToDate(dateValue))
     }
   }
 

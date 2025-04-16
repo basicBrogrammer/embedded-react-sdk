@@ -1,10 +1,7 @@
-import { useFormContext } from 'react-hook-form'
 import * as v from 'valibot'
 import { useTranslation } from 'react-i18next'
-import { CalendarDate } from '@internationalized/date'
 import { useCreateSignatory } from './useCreateSignatory'
-import { TextInputField, Grid, Flex, SelectField } from '@/components/Common'
-import { DatePicker } from '@/components/Common/Inputs/DatePicker'
+import { TextInputField, Grid, Flex, SelectField, DatePickerField } from '@/components/Common'
 import { nameValidation, zipValidation, SSN_REGEX, phoneValidation } from '@/helpers/validations'
 import { STATES_ABBR } from '@/shared/constants'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
@@ -37,7 +34,7 @@ export const generateCreateSignatorySchema = (hasSsn?: boolean) =>
     title: v.pipe(v.string(), v.nonEmpty()),
     phone: phoneValidation,
     ssn: createSSNValidation(hasSsn),
-    birthday: v.instance(CalendarDate),
+    birthday: v.instance(Date),
     street1: v.pipe(v.string(), v.nonEmpty()),
     street2: v.optional(v.string()),
     city: v.pipe(v.string(), v.nonEmpty()),
@@ -50,7 +47,6 @@ export type CreateSignatoryInputs = v.InferInput<ReturnType<typeof generateCreat
 export const CreateSignatoryForm = () => {
   const { currentSignatory } = useCreateSignatory()
   const { t } = useTranslation('Company.AssignSignatory')
-  const { control } = useFormContext()
   const placeholderSSN = usePlaceholderSSN(currentSignatory?.hasSsn)
 
   return (
@@ -97,8 +93,7 @@ export const CreateSignatoryForm = () => {
             transform={e => normalizeSSN(e.target.value)}
             placeholder={placeholderSSN}
           />
-          <DatePicker
-            control={control}
+          <DatePickerField
             name="birthday"
             label={t('signatoryDetails.birthday')}
             errorMessage={t('validations.dob')}

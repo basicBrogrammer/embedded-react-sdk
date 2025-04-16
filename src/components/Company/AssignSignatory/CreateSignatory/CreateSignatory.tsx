@@ -2,7 +2,7 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import classNames from 'classnames'
-import { parseDate } from '@internationalized/date'
+import { type Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
 import { useSignatoriesUpdateMutation } from '@gusto/embedded-api/react-query/signatoriesUpdate'
@@ -23,6 +23,7 @@ import {
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import { normalizePhone } from '@/helpers/phone'
+import { formateDateToStringDate } from '@/helpers/dateFormatting'
 
 interface CreateSignatoryProps extends CommonComponentInterface {
   companyId: string
@@ -75,7 +76,7 @@ function Root({
     city: currentSignatory?.homeAddress?.city ?? defaultValues?.city,
     state: currentSignatory?.homeAddress?.state ?? defaultValues?.state,
     zip: currentSignatory?.homeAddress?.zip ?? defaultValues?.zip,
-    ...(defaultBirthday ? { birthday: parseDate(defaultBirthday) } : {}),
+    ...(defaultBirthday ? { birthday: new Date(defaultBirthday) } : {}),
   }
 
   const formMethods = useForm<CreateSignatoryInputs>({
@@ -89,7 +90,7 @@ function Root({
 
       const commonData = {
         ...signatoryData,
-        birthday: birthday.toString(),
+        birthday: formateDateToStringDate(birthday) || '',
         homeAddress: {
           street1,
           street2,

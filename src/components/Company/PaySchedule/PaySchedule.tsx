@@ -12,7 +12,6 @@ import {
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
-import { parseDate } from '@internationalized/date'
 import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
 import type { MODE, PayScheduleInputs, PayScheduleOutputs } from './usePaySchedule'
 import {
@@ -26,6 +25,7 @@ import { BaseComponent, useBase } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { formateDateToStringDate } from '@/helpers/dateFormatting'
 
 interface PayScheduleProps extends CommonComponentInterface {
   companyId: string
@@ -54,11 +54,9 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const [currentPaySchedule, setCurrentPaySchedule] = useState<PayScheduleType | null>(null)
   const transformedDefaultValues: PayScheduleInputs = {
     frequency: defaultValues?.frequency ?? 'Every week',
-    anchorPayDate: defaultValues?.anchorPayDate
-      ? parseDate(defaultValues.anchorPayDate)
-      : undefined,
+    anchorPayDate: defaultValues?.anchorPayDate ? new Date(defaultValues.anchorPayDate) : undefined,
     anchorEndOfPayPeriod: defaultValues?.anchorEndOfPayPeriod
-      ? parseDate(defaultValues.anchorEndOfPayPeriod)
+      ? new Date(defaultValues.anchorEndOfPayPeriod)
       : undefined,
     day1: defaultValues?.day1 ?? undefined,
     day2: defaultValues?.day2 ?? undefined,
@@ -162,9 +160,9 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const handleEdit = (schedule: PayScheduleType) => {
     reset({
       frequency: schedule.frequency as Frequency,
-      anchorPayDate: schedule.anchorPayDate ? parseDate(schedule.anchorPayDate) : undefined,
+      anchorPayDate: schedule.anchorPayDate ? new Date(schedule.anchorPayDate) : undefined,
       anchorEndOfPayPeriod: schedule.anchorEndOfPayPeriod
-        ? parseDate(schedule.anchorEndOfPayPeriod)
+        ? new Date(schedule.anchorEndOfPayPeriod)
         : undefined,
       day1: schedule.day1 ?? undefined,
       day2: schedule.day2 ?? undefined,
@@ -176,14 +174,18 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
   const onSubmit: SubmitHandler<PayScheduleOutputs> = async data => {
     await baseSubmitHandler(data, async payload => {
+      const formatPayloadDate = (date: Date | undefined): string => {
+        return date ? formateDateToStringDate(date) || '' : ''
+      }
+
       if (mode === 'ADD_PAY_SCHEDULE') {
         const createPayScheduleResponse = await createPayScheduleMutation.mutateAsync({
           request: {
             companyId: companyId,
             requestBody: {
               frequency: payload.frequency,
-              anchorPayDate: payload.anchorPayDate as string,
-              anchorEndOfPayPeriod: payload.anchorEndOfPayPeriod as string,
+              anchorPayDate: formatPayloadDate(payload.anchorPayDate),
+              anchorEndOfPayPeriod: formatPayloadDate(payload.anchorEndOfPayPeriod),
               customName: payload.customName,
               day1: payload.day1,
               day2: payload.day2,
@@ -201,8 +203,8 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
             companyId: companyId,
             requestBody: {
               frequency: payload.frequency,
-              anchorPayDate: payload.anchorPayDate,
-              anchorEndOfPayPeriod: payload.anchorEndOfPayPeriod,
+              anchorPayDate: formatPayloadDate(payload.anchorPayDate),
+              anchorEndOfPayPeriod: formatPayloadDate(payload.anchorEndOfPayPeriod),
               customName: payload.customName,
               day1: payload.day1,
               day2: payload.day2,

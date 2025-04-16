@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import type { PayScheduleInputs } from '../usePaySchedule'
 import { usePaySchedule } from '../usePaySchedule'
 import style from './Edit.module.scss'
-import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import {
   Flex,
   SelectField,
@@ -13,13 +12,14 @@ import {
   CalendarDisplay,
   TextInputField,
   NumberInputField,
+  DatePickerField,
 } from '@/components/Common'
 import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 
 export const Edit = () => {
   const { t } = useTranslation('Company.PaySchedule')
   const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
-  const { control, setValue } = useFormContext<PayScheduleInputs>()
+  const { setValue } = useFormContext<PayScheduleInputs>()
   const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState<number>(0)
 
   const frequency = useWatch({ name: 'frequency' })
@@ -76,14 +76,12 @@ export const Edit = () => {
                 ]}
               />
             )}
-            <DatePicker
-              control={control}
+            <DatePickerField
               name="anchorPayDate"
               label={t('labels.firstPayDate')}
               description={t('descriptions.anchorPayDateDescription')}
             />
-            <DatePicker
-              control={control}
+            <DatePickerField
               name="anchorEndOfPayPeriod"
               label={t('labels.firstPayPeriodEndDate')}
               description={t('descriptions.anchorEndOfPayPeriodDescription')}

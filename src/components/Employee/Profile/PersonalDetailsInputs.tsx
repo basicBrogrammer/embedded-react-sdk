@@ -1,11 +1,9 @@
 import * as v from 'valibot'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { CalendarDate, getLocalTimeZone, today, parseDate } from '@internationalized/date'
 import { type Location } from '@gusto/embedded-api/models/components/location'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
-import { SelectField, TextInputField, Grid } from '@/components/Common'
-import { DatePicker } from '@/components/Common/Inputs/DatePicker'
+import { SelectField, TextInputField, Grid, DatePickerField } from '@/components/Common'
 import { addressInline, removeNonDigits } from '@/helpers/formattedStrings'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { nameValidation, SSN_REGEX } from '@/helpers/validations'
@@ -43,18 +41,8 @@ export function NameInputs() {
 export const AdminInputsSchema = v.object({
   workAddress: v.pipe(v.string(), v.nonEmpty()),
   startDate: v.pipe(
-    v.instance(CalendarDate),
-    v.transform(input => input.toString()),
-    v.nonEmpty(),
-    v.custom(value => {
-      if (typeof value !== 'string') {
-        return false
-      }
-
-      const startDate = parseDate(value)
-      const maxDate = today(getLocalTimeZone()).add({ months: 6 })
-      return startDate.compare(maxDate) <= 0
-    }),
+    v.instance(Date),
+    v.transform(date => date.toISOString().split('T')[0]),
   ),
   email: v.pipe(v.string(), v.email()),
 })
@@ -68,7 +56,6 @@ interface AdminInputsProps {
 export function AdminInputs({ companyLocations }: AdminInputsProps) {
   const { t } = useTranslation('Employee.Profile')
   const {
-    control,
     formState: { errors },
   } = useFormContext<AdminInputsSchemaType>()
 
@@ -86,8 +73,7 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
         errorMessage={t('validations.location', { ns: 'common' })}
         isRequired
       />
-      <DatePicker
-        control={control}
+      <DatePickerField
         name="startDate"
         label={t('startDateLabel')}
         description={t('startDateDescription')}
@@ -149,20 +135,15 @@ export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurity
 
 export const DateOfBirthSchema = v.object({
   dateOfBirth: v.pipe(
-    v.instance(CalendarDate),
-    v.transform(input => input.toString()),
-    v.nonEmpty(),
+    v.instance(Date),
+    v.transform(date => date.toISOString().split('T')[0]),
   ),
 })
 
-type DateOfBirthSchemaType = v.InferInput<typeof DateOfBirthSchema>
-
 export function DateOfBirthInput() {
-  const { control } = useFormContext<DateOfBirthSchemaType>()
   const { t } = useTranslation('Employee.Profile')
   return (
-    <DatePicker
-      control={control}
+    <DatePickerField
       name="dateOfBirth"
       label={t('dobLabel')}
       errorMessage={t('validations.dob', { ns: 'common' })}
@@ -181,7 +162,7 @@ const PersonalDetailsTotalSchema = v.object({
 })
 
 type NullableDatesMapper<Source> = {
-  [Property in keyof Source]: Source[Property] extends CalendarDate
+  [Property in keyof Source]: Source[Property] extends Date
     ? Source[Property] | null
     : Source[Property]
 }
