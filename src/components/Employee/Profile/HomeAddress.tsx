@@ -5,7 +5,7 @@ import * as v from 'valibot'
 import { useProfile } from './useProfile'
 import { STATES_ABBR } from '@/shared/constants'
 import { CheckboxField, Grid, SelectField, TextInputField } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const HomeAddressSchema = v.variant('selfOnboarding', [
   v.object({
