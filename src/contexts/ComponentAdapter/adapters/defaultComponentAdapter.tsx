@@ -20,9 +20,13 @@ import { Select } from '@/components/Common/UI/Select'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import { Switch } from '@/components/Common/UI/Switch'
 import type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button/ButtonTypes'
-import { Button, ButtonIcon } from '@/components/Common/UI/Button'
+import { Button } from '@/components/Common/UI/Button'
+import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
+import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
+import { Alert } from '@/components/Common/UI/Alert/Alert'
 
 export const defaultComponents: ComponentsContextType = {
+  Alert: (props: AlertProps) => <Alert {...props} />,
   Button: (props: ButtonProps) => <Button {...props} />,
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,

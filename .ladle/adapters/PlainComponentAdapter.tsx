@@ -1,3 +1,4 @@
+import type React from 'react'
 import type { TextInputProps } from '../../src/components/Common/UI/TextInput/TextInputTypes'
 import type { NumberInputProps } from '../../src/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CheckboxGroupProps } from '../../src/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
@@ -8,6 +9,7 @@ import type { RadioProps } from '../../src/components/Common/UI/Radio/RadioTypes
 import type { RadioGroupProps } from '../../src/components/Common/UI/RadioGroup/RadioGroupTypes'
 import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
+import type { AlertProps } from '../../src/components/Common/UI/Alert/AlertTypes'
 import type {
   ButtonIconProps,
   ButtonProps,
@@ -15,6 +17,17 @@ import type {
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const PlainComponentAdapter: ComponentsContextType = {
+  Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
+    return (
+      <div className={`alert alert-${status}`}>
+        {icon && <span className="alert-icon">{icon}</span>}
+        <div className="alert-content">
+          {label && <div className="alert-label">{label}</div>}
+          {children}
+        </div>
+      </div>
+    )
+  },
   Button: ({
     isError = false,
     isLoading = false,
@@ -22,9 +35,9 @@ export const PlainComponentAdapter: ComponentsContextType = {
     ref,
     onClick,
     children,
-    variant = 'primary',
     ...props
   }: ButtonProps) => {
+    // Implement a simple button without the complex event translations
     return (
       <button
         ref={ref}

@@ -21,13 +21,15 @@ export interface ButtonProps
     | 'tabIndex'
   > {
   ref?: Ref<HTMLButtonElement>
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'icon'
   isError?: boolean
   isLoading?: boolean
   isDisabled?: boolean
   children?: ReactNode
   onBlur?: ButtonFocusHandler
   onFocus?: ButtonFocusHandler
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'icon'
 }
 
-export type ButtonIconProps = Omit<ButtonProps, 'variant'>
+export type ButtonIconProps = Omit<ButtonProps, 'variant'> & {
+  'aria-label': string
+}
