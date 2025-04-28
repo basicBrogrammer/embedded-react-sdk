@@ -14,9 +14,11 @@ import type { ButtonIconProps, ButtonProps } from '@/components/Common/UI/Button
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
+import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
+  Badge: (props: BadgeProps) => JSX.Element | null
   Button: (props: ButtonProps) => JSX.Element | null
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
   Card: (props: CardProps) => JSX.Element | null

@@ -5,7 +5,6 @@ import { useEmployeeList } from './useEmployeeList'
 import {
   DataView,
   EmptyData,
-  Badge,
   Hamburger,
   HamburgerItem,
   ActionsLayout,
@@ -56,12 +55,11 @@ export const List = () => {
         title: t('statusLabel'),
         render: employee => {
           return (
-            <Badge
-              variant={employee.onboarded ? 'success' : 'warning'}
-              text={t(`onboardingStatus.${employee.onboardingStatus ?? 'undefined'}`, {
+            <Components.Badge status={employee.onboarded ? 'success' : 'warning'}>
+              {t(`onboardingStatus.${employee.onboardingStatus ?? 'undefined'}`, {
                 ns: 'common',
               })}
-            />
+            </Components.Badge>
           )
         },
       },
