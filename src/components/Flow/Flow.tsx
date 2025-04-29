@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
-import { Breadcrumb, Breadcrumbs } from 'react-aria-components'
 import type { OnEventType } from '../Base/useBase'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
@@ -43,14 +42,12 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
       >
         <Suspense fallback={<Loading />}>
           {current.context.title && (
-            <Breadcrumbs>
-              <Breadcrumb>
-                <Components.Link href="/">Timeline</Components.Link>
-              </Breadcrumb>
-              <Breadcrumb>
-                <Components.Link>{current.context.title}</Components.Link>
-              </Breadcrumb>
-            </Breadcrumbs>
+            <Components.Breadcrumbs
+              crumbs={[
+                { label: 'Timeline', href: '/' },
+                { label: current.context.title, isCurrent: true },
+              ]}
+            />
           )}
           {current.context.component && <current.context.component />}
         </Suspense>

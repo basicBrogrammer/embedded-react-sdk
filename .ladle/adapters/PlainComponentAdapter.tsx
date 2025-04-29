@@ -19,6 +19,7 @@ import type {
 } from '../../src/components/Common/UI/Button/ButtonTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
+import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -30,6 +31,26 @@ export const PlainComponentAdapter: ComponentsContextType = {
           {children}
         </div>
       </div>
+    )
+  },
+  Breadcrumbs: ({ crumbs }: BreadcrumbsProps) => {
+    return (
+      <nav className="breadcrumbs">
+        <ol>
+          {crumbs.map((crumb, index) => (
+            <li key={index} className={crumb.isCurrent ? 'current' : ''}>
+              {crumb.href ? (
+                <a href={crumb.href} onClick={crumb.onClick}>
+                  {crumb.label}
+                </a>
+              ) : (
+                <span>{crumb.label}</span>
+              )}
+              {index < crumbs.length - 1 && <span className="separator"> /</span>}
+            </li>
+          ))}
+        </ol>
+      </nav>
     )
   },
   Button: ({
