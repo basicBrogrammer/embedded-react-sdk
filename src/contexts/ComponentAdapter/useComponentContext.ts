@@ -18,6 +18,7 @@ import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { TableProps } from '@/components/Common/UI/Table'
+import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -30,6 +31,8 @@ export interface ComponentsContextType {
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null
   DatePicker: (props: DatePickerProps) => JSX.Element | null
+  OrderedList: (props: OrderedListProps) => JSX.Element | null
+  UnorderedList: (props: UnorderedListProps) => JSX.Element | null
   NumberInput: (props: NumberInputProps) => JSX.Element | null
   Radio: (props: RadioProps) => JSX.Element | null
   RadioGroup: (props: RadioGroupProps) => JSX.Element | null

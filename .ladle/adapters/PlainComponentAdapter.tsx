@@ -13,6 +13,7 @@ import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTy
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
 import type { AlertProps } from '../../src/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '../../src/components/Common/UI/Badge/BadgeTypes'
+import type { OrderedListProps, UnorderedListProps } from '../../src/components/Common/UI/List'
 import type {
   ButtonIconProps,
   ButtonProps,
@@ -955,6 +956,30 @@ export const PlainComponentAdapter: ComponentsContextType = {
           )}
         </tbody>
       </table>
+    )
+  },
+
+  OrderedList: ({ items, className, ...props }: OrderedListProps) => {
+    return (
+      <ol className={`list ordered-list ${className || ''}`} {...props}>
+        {items.map((item, index) => (
+          <li key={index} className="list-item">
+            {item}
+          </li>
+        ))}
+      </ol>
+    )
+  },
+
+  UnorderedList: ({ items, className, ...props }: UnorderedListProps) => {
+    return (
+      <ul className={`list unordered-list ${className || ''}`} {...props}>
+        {items.map((item, index) => (
+          <li key={index} className="list-item">
+            {item}
+          </li>
+        ))}
+      </ul>
     )
   },
 }
