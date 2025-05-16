@@ -13,6 +13,20 @@ import {
 import { componentEvents } from '@/shared/constants'
 
 export const onboardingMachine = {
+  overview: state(
+    transition(
+      componentEvents.COMPANY_OVERVIEW_CONTINUE,
+      'locations',
+      reduce(
+        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+          ...ctx,
+          component: LocationsContextual,
+          currentStep: 1,
+        }),
+      ),
+    ),
+    transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
+  ),
   locations: state(
     transition(
       componentEvents.COMPANY_LOCATION_DONE,
@@ -21,6 +35,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: IndustryContextual,
+          currentStep: 2,
         }),
       ),
     ),
@@ -33,6 +48,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: BankAccountContextual,
+          currentStep: 3,
         }),
       ),
     ),
@@ -45,6 +61,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: EmployeesContextual,
+          currentStep: 4,
         }),
       ),
     ),
@@ -57,6 +74,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: PayScheduleContextual,
+          currentStep: 5,
         }),
       ),
     ),
@@ -69,6 +87,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: StateTaxesFlowContextual,
+          currentStep: 6,
         }),
       ),
     ),
@@ -81,6 +100,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: DocumentSignerFlowContextual,
+          currentStep: 7,
         }),
       ),
     ),
@@ -93,22 +113,11 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: OnboardingOverviewContextual,
+          currentStep: 8,
         }),
       ),
     ),
   ),
-  overview: state(
-    transition(
-      componentEvents.COMPANY_OVERVIEW_CONTINUE,
-      'locations',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: LocationsContextual,
-        }),
-      ),
-    ),
-    transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
-  ),
+
   final: state(),
 }

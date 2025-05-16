@@ -5,7 +5,8 @@ import type { EventType } from '@/shared/constants'
 export interface FlowContextInterface {
   component: React.ComponentType | null
   onEvent: OnEventType<EventType, unknown>
-  title?: string
+  totalSteps?: number
+  currentStep?: number | null
   defaultValues?: Record<string, unknown>
 }
 
