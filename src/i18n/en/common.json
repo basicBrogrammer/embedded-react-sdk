@@ -5,6 +5,7 @@
     "errorEncountered": "There was a problem with your submission"
   },
   "optionalLabel": " (optional)",
+  "progressBarLabel": "You are on step {{currentStep}} of {{totalSteps}}",
   "errors": {
     "errorHeading": "Error",
     "globalReactError": "Error while rendering SDK component: {{error}}",
@@ -12,7 +13,8 @@
     "unknownError": "Unknown Error",
     "missingParamsOrContext": "{{component}} is missing {{param}} parameter or is used outside {{provider}}",
     "unhandledEvent": "Unhandled event type: {{event}}",
-    "unknownEventType": "Unprocessed event type"
+    "unknownEventType": "Unprocessed event type",
+    "ensureRequired": "Required prop is missing"
   },
   "icons": {
     "selectArrow": "Show options",

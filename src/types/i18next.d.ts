@@ -770,6 +770,7 @@ export interface common{
 "errorEncountered":string;
 }
 "optionalLabel":string;
+"progressBarLabel":string;
 "errors":{
 "errorHeading":string;
 "globalReactError":string;
@@ -778,6 +779,7 @@ export interface common{
 "missingParamsOrContext":string;
 "unhandledEvent":string;
 "unknownEventType":string;
+"ensureRequired":string;
 }
 "icons":{
 "selectArrow":string;
