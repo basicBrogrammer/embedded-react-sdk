@@ -6,6 +6,9 @@ import {
 } from './BankAccountComponents'
 import { bankAccountStateMachine } from './stateMachine'
 import { BankAccountListContextual } from './BankAccountComponents'
+import { BankAccountList } from './BankAccountList/BankAccountList'
+import { BankAccountForm } from './BankAccountForm/BankAccountForm'
+import { BankAccountVerify } from './BankAccountVerify/BankAccountVerify'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -14,7 +17,7 @@ export interface LocationsProps extends BaseComponentInterface<'Company.BankAcco
   companyId: string
 }
 
-export function BankAccountFlow({ companyId, onEvent, dictionary }: LocationsProps) {
+export function BankAccount({ companyId, onEvent, dictionary }: LocationsProps) {
   useComponentDictionary('Company.BankAccount', dictionary)
   const { data } = useBankAccountsGetSuspense({ companyId })
   const companyBankAccountList = data.companyBankAccountList!
@@ -34,3 +37,7 @@ export function BankAccountFlow({ companyId, onEvent, dictionary }: LocationsPro
   )
   return <Flow machine={manageLocations} onEvent={onEvent} />
 }
+
+BankAccount.BankAccountList = BankAccountList
+BankAccount.BankAccountForm = BankAccountForm
+BankAccount.BankAccountVerify = BankAccountVerify
