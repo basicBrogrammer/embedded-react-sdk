@@ -63,4 +63,29 @@ describe('Checkbox', () => {
     const input = screen.getByRole('checkbox')
     expect(input).toHaveAttribute('aria-invalid', 'true')
   })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { label: 'Default Checkbox' } },
+      { name: 'checked', props: { label: 'Checked Checkbox', isSelected: true } },
+      { name: 'disabled', props: { label: 'Disabled Checkbox', isDisabled: true } },
+      { name: 'indeterminate', props: { label: 'Indeterminate Checkbox', isIndeterminate: true } },
+      {
+        name: 'with description',
+        props: { label: 'Checkbox with Description', description: 'Helpful text' },
+      },
+      {
+        name: 'with error',
+        props: { label: 'Error Checkbox', isInvalid: true, errorMessage: 'Required field' },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Checkbox {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+  })
 })

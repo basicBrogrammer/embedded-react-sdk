@@ -61,4 +61,27 @@ describe('Radio', () => {
     const input = screen.getByRole('radio')
     expect(input).toBeChecked()
   })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { label: 'Default Radio' } },
+      { name: 'disabled', props: { label: 'Disabled Radio', isDisabled: true } },
+      {
+        name: 'with description',
+        props: { label: 'Radio with Description', description: 'Helpful text' },
+      },
+      {
+        name: 'with error',
+        props: { label: 'Error Radio', isInvalid: true, errorMessage: 'Required field' },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Radio {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+  })
 })
