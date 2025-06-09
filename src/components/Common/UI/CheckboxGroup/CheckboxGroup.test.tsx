@@ -119,6 +119,41 @@ describe('CheckboxGroup', () => {
     const testCases = [
       { name: 'default', props: { label: 'Select Options', options: mockOptions } },
       {
+        name: 'disabled',
+        props: { label: 'Select Options', options: mockOptions, isDisabled: true },
+      },
+      {
+        name: 'with description',
+        props: {
+          label: 'Select Options',
+          options: mockOptions,
+          description: 'Choose multiple options',
+        },
+      },
+      {
+        name: 'with error',
+        props: {
+          label: 'Select Options',
+          options: mockOptions,
+          isInvalid: true,
+          errorMessage: 'At least one option required',
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<CheckboxGroup {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { label: 'Select Options', options: mockOptions } },
+      {
         name: 'with selection',
         props: { label: 'Select Options', options: mockOptions, value: ['option1'] },
       },

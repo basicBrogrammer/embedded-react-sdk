@@ -104,4 +104,40 @@ describe('Alert', () => {
       },
     )
   })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic alert',
+        props: { label: 'Information', children: 'Basic alert message' },
+      },
+      {
+        name: 'alert with complex content',
+        props: {
+          label: 'Important',
+          children: (
+            <div>
+              <strong>Important:</strong> Please save your work before continuing.
+            </div>
+          ),
+        },
+      },
+      {
+        name: 'alert with custom icon',
+        props: {
+          label: 'Custom',
+          icon: <span>🔔</span>,
+          children: 'Alert with custom icon',
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Alert {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+  })
 })

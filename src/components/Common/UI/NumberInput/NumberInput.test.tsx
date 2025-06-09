@@ -47,6 +47,16 @@ describe('NumberInput', () => {
     expect(inputElement).toHaveAttribute('aria-describedby', descriptionElement.id)
   })
 
+  it('associates description with input via matching IDs', () => {
+    const description = 'Helpful description'
+    renderWithProviders(<NumberInput label="Test Input" description={description} />)
+
+    const descriptionElement = screen.getByText(description)
+    expect(descriptionElement).toBeInTheDocument()
+    const inputElement = screen.getByRole('textbox')
+    expect(inputElement).toHaveAttribute('aria-describedby', descriptionElement.id)
+  })
+
   it('associates description with input via aria-describedby', () => {
     const description = 'This is a description'
     renderWithProviders(<NumberInput label="Test Input" description={description} />)
@@ -98,14 +108,6 @@ describe('NumberInput', () => {
 
     // Check that the input has the correct value
     expect(screen.getByDisplayValue('42')).toBeInTheDocument()
-  })
-
-  it('handles min and max props', () => {
-    renderWithProviders(<NumberInput {...defaultProps} min={0} max={100} />)
-
-    const input = screen.getByRole('textbox')
-    // Note: React Aria NumberField may not set min/max attributes directly on the input
-    expect(input).toBeInTheDocument()
   })
 
   it('handles placeholder', () => {

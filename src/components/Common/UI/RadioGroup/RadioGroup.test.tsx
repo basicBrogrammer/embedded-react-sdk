@@ -133,4 +133,35 @@ describe('RadioGroup', () => {
       },
     )
   })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { label: 'Select Option', options: mockOptions } },
+      {
+        name: 'disabled',
+        props: { label: 'Select Option', options: mockOptions, isDisabled: true },
+      },
+      {
+        name: 'with description',
+        props: { label: 'Select Option', options: mockOptions, description: 'Choose one option' },
+      },
+      {
+        name: 'with error',
+        props: {
+          label: 'Select Option',
+          options: mockOptions,
+          isInvalid: true,
+          errorMessage: 'Selection required',
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<RadioGroup {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+  })
 })
