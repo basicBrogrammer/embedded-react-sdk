@@ -1,15 +1,15 @@
 import { readFileSync, writeFileSync } from 'fs'
 import * as yaml from 'js-yaml'
-import type { ProcessedPage } from '../shared/types'
+import type { ProcessedPage } from '../../shared/types'
+
+// Magic number for unordered pages (ReadMe default)
+const UNORDERED_PAGE_ORDER = 999
 
 interface FrontMatter {
   title: string
   excerpt?: string
-  category: string
-  slug: string
-  hidden: boolean
+  hidden?: boolean
   order?: number
-  parentDoc?: string
 }
 
 interface ParsedFile {
@@ -21,8 +21,6 @@ interface ParsedFile {
 export type ProcessAction = 'added' | 'updated' | 'skipped'
 
 export class FrontmatterProcessor {
-  private readonly categoryId = '6849ddd92905ee0053320687' // react-sdk category ID from lock file
-
   processFile(page: ProcessedPage, parentId?: string): ProcessAction {
     if (!page.localPath) {
       throw new Error(`No local path for page: ${page.title}`)
@@ -70,11 +68,11 @@ export class FrontmatterProcessor {
       const rawFrontmatter = yaml.load(frontmatterMatch[1]) as Record<string, any>
       const frontmatter: FrontMatter = {
         title: typeof rawFrontmatter.title === 'string' ? rawFrontmatter.title : '',
-        category: typeof rawFrontmatter.category === 'string' ? rawFrontmatter.category : '',
-        slug: typeof rawFrontmatter.slug === 'string' ? rawFrontmatter.slug : '',
-        hidden: typeof rawFrontmatter.hidden === 'boolean' ? rawFrontmatter.hidden : false,
-        parentDoc:
-          typeof rawFrontmatter.parentDoc === 'string' ? rawFrontmatter.parentDoc : undefined,
+      }
+
+      // Only include hidden if it's actually true
+      if (typeof rawFrontmatter.hidden === 'boolean' && rawFrontmatter.hidden) {
+        frontmatter.hidden = rawFrontmatter.hidden
       }
 
       // Only include excerpt if it's present and a string
@@ -101,14 +99,13 @@ export class FrontmatterProcessor {
     parentId?: string,
     existingFrontmatter?: FrontMatter,
   ): FrontMatter {
-    const slug = page.slug || this.generateSlugFromTitle(page.title)
-
     const frontmatter: FrontMatter = {
       title: page.title,
-      category: this.categoryId,
-      slug,
-      hidden: page.hidden || false,
-      parentDoc: parentId,
+    }
+
+    // Only include hidden if it's actually true
+    if (page.hidden) {
+      frontmatter.hidden = page.hidden
     }
 
     // Preserve existing excerpt if it exists, don't generate new ones
@@ -116,32 +113,20 @@ export class FrontmatterProcessor {
       frontmatter.excerpt = existingFrontmatter.excerpt
     }
 
-    // Only include order if it's a valid number
-    if (typeof page.order === 'number') {
+    // Only include order if it's a valid number and not the default value (UNORDERED_PAGE_ORDER = unordered)
+    if (typeof page.order === 'number' && page.order !== UNORDERED_PAGE_ORDER) {
       frontmatter.order = page.order
     }
 
     return frontmatter
   }
 
-  private generateSlugFromTitle(title: string): string {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim()
-  }
-
   private needsUpdate(current: FrontMatter, expected: FrontMatter): boolean {
     return (
       current.title !== expected.title ||
-      current.category !== expected.category ||
-      current.slug !== expected.slug ||
       current.excerpt !== expected.excerpt ||
       current.hidden !== expected.hidden ||
-      current.order !== expected.order ||
-      current.parentDoc !== expected.parentDoc
+      current.order !== expected.order
     )
   }
 
