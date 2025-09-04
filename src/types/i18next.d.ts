@@ -990,6 +990,7 @@ export interface common{
 };
 "labels":{
 "paginationControllCountLabel":string;
+"paginationFetchingLabel":string;
 "openMenu":string;
 "menuLabel":string;
 };
