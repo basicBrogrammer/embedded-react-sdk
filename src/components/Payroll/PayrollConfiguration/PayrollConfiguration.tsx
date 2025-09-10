@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -17,11 +20,6 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
   companyId: string
   payrollId: string
-}
-
-const useCalculatePayrollApi = ({ payrollId }: { payrollId: string }) => {
-  const mutate = async () => {}
-  return { mutate }
 }
 
 export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface) {
@@ -38,15 +36,22 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
 
   const { LoadingIndicator } = useBase()
 
+  const { data: payrollData } = usePayrollsGetSuspense(
+    {
+      companyId,
+      payrollId,
+    },
+    { refetchInterval: 5_000 },
+  )
+
   const { data: employeeData } = useEmployeesListSuspense({
     companyId,
   })
 
   const { mutateAsync: preparePayroll, isPending: isPreparePayrollPending } =
     usePayrollsPrepareMutation()
+  const { mutateAsync: calculatePayroll } = usePayrollsCalculateMutation()
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
-
-  const { mutate } = useCalculatePayrollApi({ payrollId })
   const [editedEmployeeId, setEditedEmployeeId] = useState<string | undefined>(undefined)
 
   const { data: payScheduleData } = usePaySchedulesGet(
@@ -77,8 +82,12 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
     onEvent(componentEvents.RUN_PAYROLL_BACK)
   }
   const onCalculatePayroll = async () => {
-    await mutate()
-    onEvent(componentEvents.RUN_PAYROLL_CALCULATED)
+    await calculatePayroll({
+      request: {
+        companyId,
+        payrollId,
+      },
+    })
   }
   const onEdit = (employee: Employee) => {
     setEditedEmployeeId(employee.uuid)
@@ -92,7 +101,20 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
     onEvent(event as EventType, payload)
   }
 
-  if (isPreparePayrollPending) {
+  const isCalculating =
+    payrollData.payrollShow?.processingRequest?.status ===
+    PayrollProcessingRequestStatus.Calculating
+  const isCalculated =
+    payrollData.payrollShow?.processingRequest?.status ===
+    PayrollProcessingRequestStatus.CalculateSuccess
+
+  useEffect(() => {
+    if (isCalculated) {
+      onEvent(componentEvents.RUN_PAYROLL_CALCULATED)
+    }
+  }, [isCalculated, onEvent])
+
+  if (isPreparePayrollPending || isCalculating) {
     return <LoadingIndicator />
   }
 
