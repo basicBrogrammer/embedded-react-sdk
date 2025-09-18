@@ -26,3 +26,10 @@ export interface AlertProps {
    */
   onDismiss?: () => void
 }
+
+/**
+ * Default prop values for Alert component.
+ */
+export const AlertDefaults = {
+  status: 'info',
+} as const satisfies Partial<AlertProps>
