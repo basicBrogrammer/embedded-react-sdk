@@ -1021,6 +1021,9 @@ export interface PayrollPayrollOverview{
 "hoursWorkedTable":string;
 "employeeTakeHomeTab":string;
 "employeeTakeHomeTable":string;
+"taxesTab":string;
+"taxesTable":string;
+"debitedTable":string;
 };
 "tableHeaders":{
 "totalPayroll":string;
@@ -1045,7 +1048,17 @@ export interface PayrollPayrollOverview{
 "employeeBenefits":string;
 "payment":string;
 "deductions":string;
+"taxDescription":string;
+"byYourEmployees":string;
+"byYourCompany":string;
+"debitedByGusto":string;
+"taxesTotal":string;
 };
+"totalsLabel":string;
+"directDepositLabel":string;
+"reimbursementLabel":string;
+"garnishmentsLabel":string;
+"taxesLabel":string;
 "compensationTypeLabels":{
 "exempt":string;
 "nonexempt":string;
