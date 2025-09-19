@@ -1008,6 +1008,7 @@ export interface PayrollPayrollHistory{
 };
 };
 export interface PayrollPayrollList{
+"emptyState":string;
 "payrollsListLabel":string;
 "runPayrollTitle":string;
 "status":{
