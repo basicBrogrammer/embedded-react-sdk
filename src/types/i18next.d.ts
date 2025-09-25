@@ -1072,14 +1072,24 @@ export interface PayrollPayrollList{
 };
 };
 export interface PayrollPayrollOverview{
-"pageTitle":string;
+"overviewTitle":string;
+"summaryTitle":string;
 "pageSubtitle":string;
 "submitCta":string;
 "editCta":string;
+"cancelCta":string;
+"cancelDialogTitle":string;
+"cancelDialogDescription":string;
+"cancelDialogDescriptionDeadline":string;
+"confirmCancelCta":string;
+"declineCancelCta":string;
+"payrollReceiptCta":string;
+"downloadPaystubLabel":string;
 "alerts":{
 "payrollNotCalculated":string;
 "progressSaved":string;
 "directDepositDeadline":string;
+"paystubPdfError":string;
 };
 "payrollSummaryTitle":string;
 "payrollSummaryLabel":string;
@@ -1123,6 +1133,7 @@ export interface PayrollPayrollOverview{
 "byYourCompany":string;
 "debitedByGusto":string;
 "taxesTotal":string;
+"paystub":string;
 };
 "totalsLabel":string;
 "directDepositLabel":string;
