@@ -52,7 +52,7 @@
     "lint:check": "eslint .",
     "pack": "npm run build && npm pack",
     "postversion": "git push",
-    "prepare": "husky",
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build",
     "preversion": "npm test",
     "test": "vitest",
